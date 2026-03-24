@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../impedex-websitegrok"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "impedex-website"
+	}
+}

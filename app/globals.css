@@ -1,26 +1,126 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-0: #090c12;
+  --bg-1: #0f141c;
+  --bg-2: #161d27;
+
+  --bg-page: #0b1017;
+  --bg-page-2: #111827;
+
+  --bg-panel: rgba(18, 24, 34, 0.76);
+  --bg-panel-strong: rgba(22, 29, 39, 0.92);
+
+  --line-soft: rgba(255, 255, 255, 0.06);
+  --line-strong: rgba(255, 255, 255, 0.12);
+
+  --text-main: #f3f6fb;
+  --text-muted: #9aa6b2;
+  --text-soft: #6f7c8a;
+
+  --brand-primary: #7c93ff;
+  --brand-primary-2: #4f6bff;
+  --brand-accent: #19c37d;
+
+  --metal-1: #1b2330;
+  --metal-2: #141b25;
+  --metal-3: #0e141d;
+
+  --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.28);
+  --shadow-panel: 0 24px 60px rgba(0, 0, 0, 0.38);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text-main);
+  background:
+    linear-gradient(rgba(8, 11, 16, 0.72), rgba(8, 11, 16, 0.82)),
+    url("/background.jpg"),
+    linear-gradient(180deg, var(--bg-page-2) 0%, var(--bg-page) 100%);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+@layer components {
+  .metal-header {
+    background: linear-gradient(180deg, rgba(27, 35, 48, 0.88) 0%, rgba(14, 20, 29, 0.92) 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(14px);
+  }
+
+  .glass-panel {
+    background: linear-gradient(
+      180deg,
+      rgba(20, 27, 38, 0.88) 0%,
+      rgba(14, 20, 29, 0.92) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: var(--shadow-panel);
+    backdrop-filter: blur(14px);
+  }
+
+  .soft-card {
+    background: linear-gradient(
+      180deg,
+      rgba(24, 32, 44, 0.92) 0%,
+      rgba(14, 20, 29, 0.92) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .section-title {
+    @apply text-2xl md:text-3xl font-semibold tracking-tight;
+    color: var(--text-main);
+  }
+
+  .section-subtitle {
+    @apply text-sm md:text-base;
+    color: var(--text-muted);
+  }
+
+  .nav-chip {
+    @apply rounded-full px-4 py-2 text-sm font-medium transition-all duration-200;
+    color: var(--text-muted);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(18, 24, 34, 0.72);
+    backdrop-filter: blur(10px);
+  }
+
+  .nav-chip:hover {
+    color: var(--text-main);
+    background: rgba(24, 32, 44, 0.92);
+    border-color: rgba(124, 147, 255, 0.25);
+  }
+
+  .nav-chip-active {
+    color: white;
+    background: linear-gradient(180deg, var(--brand-primary) 0%, var(--brand-primary-2) 100%);
+    border-color: transparent;
+    box-shadow: 0 10px 28px rgba(79, 107, 255, 0.35);
+  }
+
+  .status-badge {
+    @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold;
+  }
+
+  .status-new {
+    background: rgba(245, 158, 11, 0.16);
+    color: #fbbf24;
+  }
+
+  .status-progress {
+    background: rgba(96, 165, 250, 0.16);
+    color: #93c5fd;
+  }
+
+  .status-completed {
+    background: rgba(34, 197, 94, 0.16);
+    color: #86efac;
+  }
 }
