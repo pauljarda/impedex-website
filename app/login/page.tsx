@@ -114,7 +114,8 @@ export default function LoginPage() {
       <Image 
         src="/logo.png" 
         alt="IMPEDEX" 
-        fill 
+        fill
+        sizes='( max-width: 768px ) 150px, ( max-width: 1200px ) 200px, 250px' 
         className="object-contain" // Removed object-left for better balance
         priority
       />
