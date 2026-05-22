@@ -3,26 +3,7 @@
 import Image from "next/image";
 import { FormEvent, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import {
-  Tv,
-  Laptop,
-  Cpu,
-  Search,
-  Phone,
-  Mail,
-  ArrowRight,
-  Zap,
-  User,
-} from "lucide-react";
-
-const theme = {
-  primary: "#0b3d2e",
-  secondary: "#041b4a",
-  accent: "#f59e0b",
-  bg: "#f8fafc",
-  text: "#1e293b",
-  muted: "#64748b",
-};
+import { Phone, Mail, User, ArrowRight, ShieldCheck, Wrench } from "lucide-react";
 
 export default function Home() {
   const [fullName, setFullName] = useState("");
@@ -34,13 +15,9 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
-
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -63,7 +40,6 @@ export default function Home() {
       setPhone("");
       setDeviceType("");
       setIssueDescription("");
-
       setTimeout(() => setFormSubmitted(false), 5000);
     }
 
@@ -71,186 +47,143 @@ export default function Home() {
   }
 
   return (
-    <main
-      style={{ backgroundColor: theme.bg, color: theme.text }}
-      className="min-h-screen font-sans selection:bg-[#0b3d2e]/10"
-    >
-      {/* HEADER */}
-      <div className="h-20 md:h-24">
-        <header
-          className={`fixed top-0 z-50 w-full border-b border-slate-200 bg-white/95 backdrop-blur-md transition-all duration-500 ease-in-out ${
-            scrolled ? "py-1 shadow-lg" : "py-0 md:py-0"
-          }`}
-        >
-          <div className="relative flex w-full items-center justify-between px-6 md:px-12">
-            {/* LOGO */}
-            <div className="flex flex-1 justify-start">
-              <a
-                href="#"
-                className="flex items-center transition-transform hover:scale-105 active:scale-95"
-              >
-                <div
-                  className={`relative transition-all duration-500 ease-in-out ${
-                    scrolled ? "h-16 w-44" : "h-20 w-56 md:h-28 md:w-80"
-                  }`}
-                >
-                  <Image
-                    src="/logo.png"
-                    alt="IMPEDEX"
-                    fill
-                    sizes="(max-width: 768px) 150px, 250px"
-                    className="object-contain object-left"
-                    priority
-                  />
-                </div>
-              </a>
-            </div>
-
-            {/* NAV */}
-            <nav
-              className="absolute left-1/2 hidden -translate-x-1/2 gap-10 text-sm font-black uppercase tracking-wider lg:flex"
-              style={{ color: theme.secondary }}
-            >
-              {["Reparații", "Magazin", "Contact"].map((item) => (
-                <a
-                  key={item}
-                  href={`#${item.toLowerCase()}`}
-                  className="group relative transition-all hover:-translate-y-0.5 hover:text-[#0b3d2e]"
-                >
-                  {item}
-                  <span className="absolute -bottom-2 left-0 h-0.5 w-0 rounded-full bg-[#0b3d2e] transition-all duration-300 group-hover:w-full" />
-                </a>
-              ))}
-            </nav>
-
-            {/* CLIENT BUTTON */}
-            <div className="flex flex-1 justify-end">
-              <a
-                href="/login"
-                className={`group flex items-center gap-2 rounded-full border-2 border-[#041b4a] text-[#041b4a] font-black uppercase tracking-widest transition-all duration-300 hover:border-[#0b3d2e] hover:bg-[#0b3d2e] hover:text-white hover:shadow-lg active:scale-95 ${
-                  scrolled ? "px-4 py-2 text-[10px]" : "px-6 py-3 text-xs"
+    <main className="min-h-screen bg-[#07111f] font-sans text-white">
+      <header
+        className={`fixed top-0 z-50 w-full border-b border-white/10 bg-[#07111f]/90 backdrop-blur-md transition-all duration-300 ${
+          scrolled ? "py-1 shadow-lg shadow-black/20" : "py-2"
+        }`}
+      >
+        <div className="relative flex w-full items-center justify-between px-6 md:px-12">
+          <div className="flex flex-1 justify-start">
+            <a href="/" className="flex items-center">
+              <div
+                className={`relative transition-all duration-300 ${
+                  scrolled ? "h-16 w-44" : "h-20 w-56 md:h-24 md:w-72"
                 }`}
               >
-                <User
-                  size={scrolled ? 14 : 18}
-                  className="transition-colors duration-300"
+                <Image
+                  src="/logo.png"
+                  alt="IMPEDEX"
+                  fill
+                  sizes="(max-width: 768px) 176px, 288px"
+                  className="object-contain object-left brightness-0 invert"
+                  priority
                 />
-                <span>Cont Client</span>
-              </a>
-            </div>
+              </div>
+            </a>
           </div>
-        </header>
-      </div>
 
-      {/* HERO SECTION */}
-      <section className="mx-auto max-w-7xl px-6 py-16 md:py-24">
-        <div className="relative overflow-hidden rounded-[3rem] border border-slate-200 bg-white p-8 shadow-2xl md:p-20">
-          <div className="relative z-10 max-w-3xl">
-            <div
-              className="mb-6 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-white"
-              style={{ backgroundColor: theme.primary }}
-            >
-              <Zap size={12} />
-              Service Autorizat
-            </div>
+          <nav className="absolute left-1/2 hidden -translate-x-1/2 gap-20 text-xs font-bold uppercase tracking-[0.18em] text-white/80 lg:flex xl:gap-28">
+            {["Reparații", "Magazin", "Contact"].map((item) => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                className="transition-colors hover:text-emerald-300"
+              >
+                {item}
+              </a>
+            ))}
+          </nav>
 
-            <h1
-              className="text-4xl font-black leading-tight md:text-6xl"
-              style={{ color: theme.secondary }}
+          <div className="flex flex-1 justify-end">
+            <a
+              href="/login"
+              className={`flex items-center gap-2 rounded-full border border-white/25 bg-white/5 font-bold uppercase tracking-widest text-white transition-all hover:border-emerald-300 hover:bg-white/10 ${
+                scrolled ? "px-4 py-2 text-[10px]" : "px-6 py-3 text-xs"
+              }`}
             >
-              Reparații electronice și produse{" "}
-              <span style={{ color: theme.primary }}>
-                verificate corect
-              </span>
+              <User size={scrolled ? 14 : 18} />
+              <span>Cont Client</span>
+            </a>
+          </div>
+        </div>
+      </header>
+
+      <section id="reparații" className="relative min-h-screen overflow-hidden">
+        <img
+          src="/repair.png"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover opacity-50"
+        />
+
+        <div className="absolute inset-0 bg-gradient-to-r from-[#07111f] via-[#07111f]/85 to-[#07111f]/35" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#07111f] via-transparent to-[#07111f]/45" />
+
+        <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl items-center px-6 pt-24 lg:px-8">
+          <div className="max-w-3xl">
+        
+
+            <h1 className="text-5xl font-black uppercase leading-[0.95] tracking-[-0.04em] text-white sm:text-7xl lg:text-8xl">
+              <span className="block">Reparații</span>
+              <span className="block">electronice</span>
+              <span className="block text-emerald-300">pe bune</span>
             </h1>
 
-            <div className="mt-10 flex flex-wrap items-center gap-6">
+            <p className="mt-8 max-w-xl text-base leading-8 text-slate-300 sm:text-lg">
+              Diagnoză reală, intervenții profesionale și produse verificate
+              înainte de vânzare.
+            </p>
+
+            <div className="mt-12 flex flex-col gap-4 sm:flex-row">
               <a
                 href="#contact"
-                style={{ backgroundColor: theme.primary }}
-                className="rounded-full px-8 py-4 text-xs font-black uppercase tracking-widest text-white shadow-lg transition-transform hover:scale-105"
+                className="inline-flex items-center justify-center rounded-full bg-emerald-400 px-9 py-4 text-[11px] font-black uppercase tracking-[0.2em] text-[#07111f] transition-all hover:bg-emerald-300"
               >
                 Programează reparație
               </a>
 
               <a
-                href="#contact"
-                className="rounded-full border-2 px-8 py-4 text-xs font-black uppercase tracking-widest transition-all hover:bg-amber-400 hover:text-slate-950"
-                style={{
-                  borderColor: theme.accent,
-                  color: theme.secondary,
-                }}
+                href="#magazin"
+                className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/5 px-9 py-4 text-[11px] font-black uppercase tracking-[0.2em] text-white transition-all hover:bg-white/10"
               >
-                Cere ofertă
+                Vezi produse
+                <ArrowRight size={15} className="ml-2" />
               </a>
             </div>
           </div>
         </div>
       </section>
 
-      {/* SERVICES */}
-      <section id="reparații" className="mx-auto max-w-7xl px-6 py-20">
-        <div className="mb-16 text-center">
-          <h2
-            className="text-3xl font-black uppercase md:text-5xl"
-            style={{ color: theme.secondary }}
-          >
-            Expertiză Tehnică
-          </h2>
-          <div className="mx-auto mt-4 h-1.5 w-24 rounded-full bg-[#0b3d2e]" />
-        </div>
-
-        <div className="grid gap-8 md:grid-cols-4">
-          {[
-            { title: "TV & Monitoare", icon: <Tv /> },
-            { title: "Laptop & PC", icon: <Laptop /> },
-            { title: "Electronice", icon: <Cpu /> },
-            { title: "Diagnoză", icon: <Search /> },
-          ].map((item) => (
-            <div
-              key={item.title}
-              className="rounded-[2rem] border border-slate-100 bg-white p-10 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
-            >
-              <div className="mb-6 h-12 w-12" style={{ color: theme.primary }}>
-                {item.icon}
-              </div>
-              <h3 className="text-xl font-black" style={{ color: theme.secondary }}>
-                {item.title}
-              </h3>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* MAGAZIN PREVIEW */}
-      <section id="magazin" className="mx-4 rounded-[3rem] bg-slate-900 py-32 text-white">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="mb-16 flex items-end justify-between">
+      <section id="magazin" className="bg-[#07111f] px-6 py-28 text-white">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-14 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div>
-              <h2 className="text-4xl font-black uppercase">Produse Verificate</h2>
-              <p className="mt-2 font-medium opacity-60">
-                Garanție și calitate IMPEDEX.
+              <p className="mb-3 text-xs font-black uppercase tracking-[0.25em] text-emerald-300">
+                Magazin
+              </p>
+              <h2 className="text-4xl font-black uppercase">
+                Produse verificate
+              </h2>
+              <p className="mt-3 max-w-xl font-medium text-white/55">
+                Produse testate înainte de vânzare, pregătite pentru utilizare
+                reală.
               </p>
             </div>
 
             <a
-              href="#"
-              className="flex items-center gap-2 font-black uppercase tracking-widest text-amber-400 hover:underline"
+              href="#contact"
+              className="flex w-fit items-center gap-2 rounded-full border border-white/15 px-5 py-3 text-xs font-black uppercase tracking-widest text-white/80 transition-all hover:bg-white/10"
             >
-              Magazin
+              Cere ofertă
               <ArrowRight size={16} />
             </a>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-4">
-            {["Premium Laptop", "Pro Display", "Hardware", "Gadgets"].map(
+          <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-4">
+            {["Laptop verificat", "Monitor testat", "Componente", "Gadgeturi"].map(
               (item) => (
                 <div
                   key={item}
-                  className="rounded-[2rem] border border-white/10 bg-white/5 p-6 transition-all hover:bg-white/10"
+                  className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-5 transition-all hover:-translate-y-1 hover:bg-white/[0.07]"
                 >
-                  <div className="mb-6 aspect-square rounded-2xl bg-white/5" />
-                  <h3 className="text-xl font-black">{item}</h3>
+                  <div className="mb-6 flex aspect-square items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04]">
+                    <Wrench size={34} className="text-emerald-300/60" />
+                  </div>
+                  <h3 className="text-lg font-black">{item}</h3>
+                  <p className="mt-2 text-sm font-medium text-white/45">
+                    Testat și pregătit pentru vânzare.
+                  </p>
                 </div>
               )
             )}
@@ -258,36 +191,42 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CONTACT SECTION */}
-      <section id="contact" className="mx-auto max-w-7xl px-6 py-24">
-        <div className="grid gap-12 lg:grid-cols-[1fr_1.5fr]">
-          <div
-            className="rounded-[3rem] p-12 text-white shadow-xl"
-            style={{ backgroundColor: theme.secondary }}
-          >
+      <section id="contact" className="bg-[#07111f] px-6 py-24 text-white">
+        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1fr_1.5fr]">
+          <div className="rounded-[3rem] border border-white/10 bg-white/[0.04] p-12 shadow-2xl shadow-black/20">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-white/70">
+              <ShieldCheck size={14} className="text-emerald-300" />
+              Ticket direct în sistem
+            </div>
+
             <h2 className="mb-8 text-5xl font-black leading-tight">
               Hai să
               <br />
               vorbim.
             </h2>
 
+            <p className="max-w-sm text-sm font-medium leading-7 text-white/55">
+              Trimite solicitarea, iar cererea ajunge direct în sistemul
+              IMPEDEX pentru urmărire și administrare.
+            </p>
+
             <div className="mt-12 space-y-6">
               <div className="flex items-center gap-4 font-bold">
-                <Mail className="text-amber-400" />
+                <Mail className="text-emerald-300" />
                 contact@impedex.ro
               </div>
 
               <div className="flex items-center gap-4 font-bold">
-                <Phone className="text-amber-400" />
+                <Phone className="text-emerald-300" />
                 +40 7xx xxx xxx
               </div>
             </div>
           </div>
 
-          <div className="rounded-[3rem] border border-slate-200 bg-white p-10 shadow-2xl">
+          <div className="rounded-[3rem] border border-slate-200 bg-white p-10 text-slate-900 shadow-2xl shadow-black/25">
             {formSubmitted ? (
               <div className="py-20 text-center font-black uppercase text-green-600">
-                Solicitare Trimisă cu Succes!
+                Solicitare trimisă cu succes!
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="grid gap-6">
@@ -298,7 +237,7 @@ export default function Home() {
                     required
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="w-full rounded-2xl border-2 border-slate-100 bg-slate-50 p-5 font-bold outline-none focus:border-[#0b3d2e]"
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-5 font-bold outline-none transition-all focus:border-emerald-600 focus:bg-white"
                   />
 
                   <input
@@ -307,7 +246,7 @@ export default function Home() {
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full rounded-2xl border-2 border-slate-100 bg-slate-50 p-5 font-bold outline-none focus:border-[#0b3d2e]"
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-5 font-bold outline-none transition-all focus:border-emerald-600 focus:bg-white"
                   />
                 </div>
 
@@ -317,24 +256,24 @@ export default function Home() {
                   required
                   value={deviceType}
                   onChange={(e) => setDeviceType(e.target.value)}
-                  className="w-full rounded-2xl border-2 border-slate-100 bg-slate-50 p-5 font-bold outline-none focus:border-[#0b3d2e]"
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-5 font-bold outline-none transition-all focus:border-emerald-600 focus:bg-white"
                 />
 
                 <textarea
-                  rows={4}
+                  rows={5}
                   placeholder="Descrie defectul pe scurt..."
                   required
                   value={issueDescription}
                   onChange={(e) => setIssueDescription(e.target.value)}
-                  className="w-full rounded-2xl border-2 border-slate-100 bg-slate-50 p-5 font-bold outline-none focus:border-[#0b3d2e]"
+                  className="w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 p-5 font-bold outline-none transition-all focus:border-emerald-600 focus:bg-white"
                 />
 
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full rounded-2xl bg-[#0b3d2e] py-6 font-black uppercase tracking-widest text-white shadow-lg transition-all hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="w-full rounded-2xl bg-[#0b3d2e] py-6 font-black uppercase tracking-widest text-white transition-all hover:bg-[#0f4d3a] disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {isSubmitting ? "Se trimite..." : "Trimite Solicitarea"}
+                  {isSubmitting ? "Se trimite..." : "Trimite solicitarea"}
                 </button>
               </form>
             )}
@@ -342,9 +281,9 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="border-t border-slate-200 py-16 text-center">
-        <p className="text-[10px] font-black uppercase tracking-widest opacity-40">
-          © {new Date().getFullYear()} IMPEDEX · Engineering Solutions
+      <footer className="border-t border-white/10 bg-[#07111f] px-6 py-12 text-center text-white">
+        <p className="text-[10px] font-black uppercase tracking-widest text-white/40">
+          © {new Date().getFullYear()} IMPEDEX · Reparații Electronice Profesionale
         </p>
       </footer>
     </main>
