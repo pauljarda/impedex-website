@@ -2,7 +2,22 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { ArrowRight, Mail, MapPin, Phone, User } from "lucide-react";
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 36 },
+  visible: { opacity: 1, y: 0 },
+};
+
+const stagger = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.12,
+    },
+  },
+};
 
 export default function Home() {
   const [scrolled, setScrolled] = useState(false);
@@ -42,24 +57,13 @@ export default function Home() {
           </div>
 
           <nav className="absolute left-1/2 hidden -translate-x-1/2 gap-16 text-base font-bold uppercase tracking-wider text-white/80 lg:flex xl:gap-24">
-            <a
-              href="#reparații"
-              className="transition-colors hover:text-emerald-300"
-            >
+            <a href="#reparații" className="transition-colors hover:text-emerald-300">
               Service
             </a>
-
-            <a
-              href="#ce-reparam"
-              className="transition-colors hover:text-emerald-300"
-            >
+            <a href="#ce-reparam" className="transition-colors hover:text-emerald-300">
               Reparații
             </a>
-
-            <a
-              href="#contact"
-              className="transition-colors hover:text-emerald-300"
-            >
+            <a href="#contact" className="transition-colors hover:text-emerald-300">
               Contact
             </a>
           </nav>
@@ -90,7 +94,13 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-t from-[#07111f] via-transparent to-[#07111f]/50" />
         <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-b from-transparent to-[#07111f]" />
 
-        <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl items-center px-6 pb-20 pt-28 lg:px-8">
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={fadeUp}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="relative z-10 mx-auto flex min-h-screen max-w-7xl items-center px-6 pb-20 pt-28 lg:px-8"
+        >
           <div className="max-w-4xl">
             <h1 className="max-w-4xl text-5xl font-bold leading-tight tracking-[-0.03em] text-white sm:text-6xl lg:text-7xl">
               Reparații TV, laptopuri și electronice industriale
@@ -147,141 +157,254 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
-      <section id="ce-reparam" className="bg-[#07111f] px-6 py-24 text-white">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-14">
-            <p className="mb-3 text-sm font-semibold text-emerald-300">
-              Ce reparăm
-            </p>
+      <motion.section
+  id="ce-reparam"
+  initial="hidden"
+  whileInView="visible"
+  viewport={{ once: true, amount: 0.2 }}
+  variants={fadeUp}
+  transition={{ duration: 0.6, ease: "easeOut" }}
+  className="bg-[#07111f] px-6 py-24 text-white"
+>
+  <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1.15fr_0.85fr]">
+    <div>
+      <div className="mb-14">
+        <p className="mb-3 text-sm font-semibold text-emerald-300">
+          Ce reparăm
+        </p>
 
-            <h2 className="text-4xl font-bold">
-              Reparații pentru electronice casnice și industriale
-            </h2>
+        <h2 className="text-4xl font-bold">
+          Reparații pentru electronice casnice și industriale
+        </h2>
 
-            <p className="mt-4 max-w-2xl text-white/60">
-              De la electronice de uz casnic până la echipamente industriale și
-              sisteme fotovoltaice.
-            </p>
-          </div>
+        <p className="mt-4 max-w-2xl text-white/60">
+          De la electronice de uz casnic până la echipamente industriale,
+          surse, plăci electronice și sisteme fotovoltaice.
+        </p>
+      </div>
 
-          <div className="grid gap-6 lg:grid-cols-2">
-            {[
-              {
-                title: "Electronice de uz casnic",
-                items: "TV-uri, monitoare, console, sisteme audio",
-              },
-              {
-                title: "Telefoane și laptopuri",
-                items: "Laptopuri, telefoane, tablete, alimentare, conectori",
-              },
-              {
-                title: "Surse și plăci electronice",
-                items: "Surse de alimentare, plăci de control, componente defecte",
-              },
-              {
-                title: "Industrial & fotovoltaic",
-                items: "Invertoare solare, controlere, echipamente industriale",
-              },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="rounded-2xl border border-white/10 bg-white/[0.04] p-7 transition hover:border-emerald-400/40 hover:bg-white/[0.06]"
-              >
-                <h3 className="text-xl font-semibold text-white">
-                  {item.title}
-                </h3>
-                <p className="mt-3 text-sm leading-7 text-white/60">
-                  {item.items}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-[#07111f] px-6 py-24 text-white">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-14">
-            <p className="mb-3 text-sm font-semibold text-emerald-300">
-              Reparații prin curier
-            </p>
-
-            <h2 className="text-4xl font-bold">
-              Poți trimite echipamentul din orice oraș
-            </h2>
-
-            <p className="mt-4 max-w-2xl text-white/60">
-              Completezi o cerere de diagnosticare, analizăm solicitarea, iar
-              dacă reparația merită încercată, putem organiza ridicarea prin
-              curier.
-            </p>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-            {[
-              {
-                title: "1. Trimiți cererea",
-                text: "Descrii defectul și lași datele de contact.",
-              },
-              {
-                title: "2. Verificăm solicitarea",
-                text: "Analizăm dacă echipamentul merită trimis la diagnostic.",
-              },
-              {
-                title: "3. Ridicare prin curier",
-                text: "După aprobare, curierul poate ridica produsul de la adresă.",
-              },
-              {
-                title: "4. Reparație și retur",
-                text: "Reparăm, testăm și trimitem echipamentul înapoi.",
-              },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="rounded-2xl border border-white/10 bg-white/[0.03] p-6"
-              >
-                <h3 className="text-lg font-semibold text-white">
-                  {item.title}
-                </h3>
-                <p className="mt-3 text-sm leading-6 text-white/55">
-                  {item.text}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <a
-            href="/diagnosticare"
-            className="mt-10 inline-flex items-center justify-center rounded-md bg-[#1f6f5b] px-7 py-3 text-sm font-semibold text-white transition hover:bg-[#195c4b]"
+      <motion.div variants={stagger} className="grid gap-6 md:grid-cols-2">
+        {[
+          {
+            title: "Electronice de uz casnic",
+            items: "TV-uri, monitoare, console, sisteme audio",
+          },
+          {
+            title: "Telefoane și laptopuri",
+            items: "Laptopuri, telefoane, tablete, alimentare, conectori",
+          },
+          {
+            title: "Surse și plăci electronice",
+            items: "Surse de alimentare, plăci de control, componente defecte",
+          },
+          {
+            title: "Industrial & fotovoltaic",
+            items: "Invertoare solare, controlere, echipamente industriale",
+          },
+        ].map((item) => (
+          <motion.div
+            key={item.title}
+            variants={fadeUp}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="rounded-2xl border border-white/10 bg-white/[0.04] p-7 transition hover:border-emerald-400/40 hover:bg-white/[0.06]"
           >
-            Solicită diagnosticare
-          </a>
-        </div>
-      </section>
+            <h3 className="text-xl font-semibold text-white">{item.title}</h3>
+            <p className="mt-3 text-sm leading-7 text-white/60">
+              {item.items}
+            </p>
+          </motion.div>
+        ))}
+      </motion.div>
+    </div>
 
-      <footer
+    <motion.div
+      variants={fadeUp}
+      transition={{ duration: 0.7, ease: "easeOut" }}
+      className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] p-4"
+    >
+      <img
+        src="/repair.png"
+        alt="Reparații electronice IMPEDEX"
+        className="h-[520px] w-full rounded-2xl object-cover opacity-90"
+      />
+
+      <div className="absolute inset-4 rounded-2xl bg-gradient-to-t from-[#07111f]/90 via-transparent to-transparent" />
+
+      <div className="absolute bottom-10 left-10 right-10">
+        <p className="text-sm font-semibold text-emerald-300">
+          Diagnostic la nivel de componentă
+        </p>
+        <h3 className="mt-2 text-2xl font-bold text-white">
+          TV-uri, surse, plăci electronice și invertoare
+        </h3>
+        <p className="mt-3 text-sm leading-6 text-white/65">
+          Intervenții pentru electronice casnice, echipamente industriale și
+          sisteme fotovoltaice.
+        </p>
+      </div>
+    </motion.div>
+  </div>
+</motion.section>
+
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={fadeUp}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="bg-[#07111f] px-6 py-24 text-white"
+      >
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-12 lg:grid-cols-[1.3fr_0.7fr]">
+            <div>
+              <div className="mb-14">
+                <p className="mb-3 text-sm font-semibold text-emerald-300">
+                  Reparații prin curier
+                </p>
+
+                <h2 className="text-4xl font-bold">
+                  Poți trimite echipamentul din orice oraș
+                </h2>
+
+                <p className="mt-4 max-w-2xl text-white/60">
+                  Completezi o cerere de diagnosticare, analizăm solicitarea,
+                  iar dacă reparația merită încercată, putem organiza ridicarea
+                  prin curier.
+                </p>
+              </div>
+
+              <motion.div variants={stagger} className="grid gap-6 md:grid-cols-2">
+                {[
+                  {
+                    title: "1. Trimiți cererea",
+                    text: "Descrii defectul și lași datele de contact.",
+                  },
+                  {
+                    title: "2. Verificăm solicitarea",
+                    text: "Analizăm dacă echipamentul merită trimis la diagnostic.",
+                  },
+                  {
+                    title: "3. Ridicare prin curier",
+                    text: "După aprobare, curierul poate ridica produsul de la adresă.",
+                  },
+                  {
+                    title: "4. Reparație și retur",
+                    text: "Reparăm, testăm și trimitem echipamentul înapoi.",
+                  },
+                ].map((item) => (
+                  <motion.div
+                    key={item.title}
+                    variants={fadeUp}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                    className="rounded-2xl border border-white/10 bg-white/[0.03] p-6"
+                  >
+                    <h3 className="text-lg font-semibold text-white">
+                      {item.title}
+                    </h3>
+                    <p className="mt-3 text-sm leading-6 text-white/55">
+                      {item.text}
+                    </p>
+                  </motion.div>
+                ))}
+              </motion.div>
+
+              <a
+                href="/diagnosticare"
+                className="mt-10 inline-flex items-center justify-center rounded-md bg-[#1f6f5b] px-7 py-3 text-sm font-semibold text-white transition hover:bg-[#195c4b]"
+              >
+                Solicită diagnosticare
+              </a>
+            </div>
+
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-8">
+              <h3 className="mb-6 text-2xl font-bold text-white">
+                Întrebări frecvente
+              </h3>
+
+              <div className="space-y-4">
+                <details className="rounded-xl border border-white/10 p-4">
+                  <summary className="cursor-pointer font-medium">
+                    Cât durează diagnosticarea?
+                  </summary>
+                  <p className="mt-3 text-sm text-white/60">
+                    În majoritatea cazurilor răspundem în 1-2 zile lucrătoare.
+                  </p>
+                </details>
+
+                <details className="rounded-xl border border-white/10 p-4">
+                  <summary className="cursor-pointer font-medium">
+                    Ce se întâmplă dacă nu merită reparat?
+                  </summary>
+                  <p className="mt-3 text-sm text-white/60">
+                    Te contactăm înainte de orice lucrare și îți prezentăm
+                    opțiunile.
+                  </p>
+                </details>
+
+                <details className="rounded-xl border border-white/10 p-4">
+                  <summary className="cursor-pointer font-medium">
+                    Pot trimite prin curier?
+                  </summary>
+                  <p className="mt-3 text-sm text-white/60">
+                    Da. Putem organiza ridicarea produsului din orice localitate
+                    din România.
+                  </p>
+                </details>
+
+                <details className="rounded-xl border border-white/10 p-4">
+                  <summary className="cursor-pointer font-medium">
+                    Cine plătește transportul?
+                  </summary>
+                  <p className="mt-3 text-sm text-white/60">
+                    Costul transportului este comunicat înainte de confirmarea
+                    reparației.
+                  </p>
+                </details>
+
+                <details className="rounded-xl border border-white/10 p-4">
+                  <summary className="cursor-pointer font-medium">
+                    Pot verifica statusul reparației?
+                  </summary>
+                  <p className="mt-3 text-sm text-white/60">
+                    Da. Din contul client vei putea urmări fiecare etapă a
+                    reparației.
+                  </p>
+                </details>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.section>
+
+      <motion.footer
         id="contact"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.15 }}
+        variants={fadeUp}
+        transition={{ duration: 0.6, ease: "easeOut" }}
         className="border-t border-white/10 bg-[#080808] px-6 py-16 text-white"
       >
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1fr_500px]">
           <div>
-  <div className="relative h-24 w-72">
-    <Image
-      src="/logo.png"
-      alt="IMPEDEX"
-      fill
-      className="object-contain object-left brightness-0 invert"
-    />
-  </div>
+            <div className="relative h-24 w-72">
+              <Image
+             src="/logo.png"
+            alt="IMPEDEX"
+             fill
+              sizes="(max-width: 768px) 200px, 288px"
+              className="object-contain object-left brightness-0 invert"
+                  />
+            </div>
 
-  <p className="mt-4 max-w-xl text-sm leading-7 text-white/60">
-    Service electronic pentru TV-uri, telefoane, laptopuri, surse,
-    plăci electronice, echipamente industriale și sisteme
-    fotovoltaice.
-  </p>
+            <p className="mt-4 max-w-xl text-sm leading-7 text-white/60">
+              Service electronic pentru TV-uri, telefoane, laptopuri, surse,
+              plăci electronice, echipamente industriale și sisteme
+              fotovoltaice.
+            </p>
 
             <div className="mt-8 grid gap-10 md:grid-cols-3">
               <div>
@@ -367,7 +490,7 @@ export default function Home() {
           </p>
           <p>Română (România)</p>
         </div>
-      </footer>
+      </motion.footer>
     </main>
   );
 }
