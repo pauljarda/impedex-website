@@ -80,17 +80,19 @@ export default function Home() {
             </a>
           </div>
 
-          <nav className="absolute left-1/2 hidden -translate-x-1/2 gap-16 text-sm font-semibold text-white/75 lg:flex xl:gap-24">
-            {["Reparații", "Magazin", "Contact"].map((item) => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                className="transition-colors hover:text-white"
-              >
-                {item}
-              </a>
-            ))}
-          </nav>
+          <nav className="absolute left-1/2 hidden -translate-x-1/2 gap-16 text-base font-bold uppercase tracking-wider text-white/80 lg:flex xl:gap-24">
+  <a href="#reparații" className="transition-colors hover:text-emerald-300">
+    Service
+  </a>
+
+  <a href="#ce-reparam" className="transition-colors hover:text-emerald-300">
+    Reparații
+  </a>
+
+  <a href="#contact" className="transition-colors hover:text-emerald-300">
+    Contact
+  </a>
+</nav>
 
           <div className="flex flex-1 justify-end">
             <a
@@ -117,16 +119,15 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-r from-[#07111f] via-[#07111f]/80 to-[#07111f]/30" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#07111f] via-transparent to-[#07111f]/50" />
 
-        <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl items-start px-6 pt-52 lg:px-8 lg:pt-56">
+        <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl items-center px-6 pb-20 pt-24 lg:px-8">
           <div className="max-w-4xl">
 
             <h1 className="max-w-4xl text-5xl font-bold leading-tight tracking-[-0.03em] text-white sm:text-6xl lg:text-7xl">
-              Service electronic și produse verificate
+              Reparații TV, laptopuri și electronice industriale
             </h1>
 
             <p className="mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
-              Reparații pentru televizoare, laptopuri și alte electronice, plus
-              produse second-hand testate înainte de vânzare.
+              Diagnostic și reparații pentru TV-uri, telefoane, laptopuri, surse, plăci electronice și echipamente industriale.
             </p>
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
@@ -134,7 +135,7 @@ export default function Home() {
                 href="#contact"
                 className="inline-flex items-center justify-center rounded-md bg-[#1f6f5b] px-7 py-3 text-sm font-semibold text-white transition hover:bg-[#195c4b]"
               >
-                Programează reparație
+                Contactează service-ul
               </a>
 
               <a
@@ -145,56 +146,80 @@ export default function Home() {
                 <ArrowRight size={15} />
               </a>
             </div>
+           <div className="mt-10 flex flex-wrap gap-10 border-l-2 border-emerald-500 pl-6">
+  <div>
+    <p className="text-lg font-semibold text-white">
+      30+ ani experiență
+    </p>
+    <p className="mt-1 text-sm text-white/60">
+      Reparații și diagnoză electronică
+    </p>
+  </div>
+
+  <div>
+    <p className="text-lg font-semibold text-white">
+      TV • Telefoane • Laptopuri
+    </p>
+    <p className="mt-1 text-sm text-white/60">
+      Diagnostic și reparații profesionale
+    </p>
+  </div>
+
+  <div>
+    <p className="text-lg font-semibold text-white">
+      Industrial & Fotovoltaic
+    </p>
+    <p className="mt-1 text-sm text-white/60">
+      Invertoare, surse și plăci electronice
+    </p>
+  </div>
+</div>
           </div>
         </div>
       </section>
 
-      <section id="magazin" className="bg-[#07111f] px-6 py-28 text-white">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-14 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="mb-3 text-sm font-semibold text-emerald-300">
-                Magazin
-              </p>
-              <h2 className="text-4xl font-bold">Produse verificate</h2>
-              <p className="mt-3 max-w-xl font-medium text-white/60">
-                Produse second hand testate înainte de vânzare, pregătite pentru
-                utilizare reală.
-              </p>
-            </div>
+     <section id="ce-reparam" className="bg-[#07111f] px-6 py-24 text-white">
+  <div className="mx-auto max-w-7xl">
+    <div className="mb-14">
+      <p className="mb-3 text-sm font-semibold text-emerald-300">
+        Ce reparăm
+      </p>
 
-            <a
-              href="#contact"
-              className="flex w-fit items-center gap-2 rounded-md bg-white px-5 py-3 text-sm font-semibold text-[#07111f] transition hover:bg-slate-100"
-            >
-              Cere ofertă
-              <ArrowRight size={16} />
-            </a>
-          </div>
+      <h2 className="text-4xl font-bold">
+        Echipamente și sisteme electronice
+      </h2>
 
-          <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-4">
-            {[
-              "Laptop verificat",
-              "Monitor testat",
-              "Componente",
-              "Gadgeturi",
-            ].map((item) => (
-              <div
-                key={item}
-                className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 transition hover:bg-white/[0.07]"
-              >
-                <div className="mb-6 flex aspect-square items-center justify-center rounded-xl border border-white/10 bg-white/[0.04]">
-                  <Wrench size={34} className="text-emerald-300/60" />
-                </div>
-                <h3 className="text-lg font-semibold">{item}</h3>
-                <p className="mt-2 text-sm font-medium text-white/50">
-                  Testat și pregătit pentru vânzare.
-                </p>
-              </div>
-            ))}
-          </div>
+      <p className="mt-4 max-w-2xl text-white/60">
+        De la electronice de uz casnic până la echipamente industriale și
+        sisteme fotovoltaice.
+      </p>
+    </div>
+
+    <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+      {[
+        "Televizoare",
+        "Telefoane",
+        "Laptopuri",
+        "Console",
+        "Monitoare",
+        "Surse de alimentare",
+        "Invertoare fotovoltaice",
+        "Plăci electronice industriale",
+      ].map((item) => (
+        <div
+          key={item}
+          className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 transition hover:bg-white/[0.07]"
+        >
+          <h3 className="text-lg font-semibold">{item}</h3>
+
+          <p className="mt-3 text-sm leading-6 text-white/55">
+            Diagnostic, depanare și reparație.
+          </p>
         </div>
-      </section>
+      ))}
+    </div>
+  </div>
+</section>
 
       <section id="contact" className="bg-[#07111f] px-6 py-24 text-white">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1fr_1.5fr]">
