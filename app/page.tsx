@@ -3,7 +3,14 @@
 import Image from "next/image";
 import { FormEvent, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { Phone, Mail, User, ArrowRight, ShieldCheck, Wrench } from "lucide-react";
+import {
+  Phone,
+  Mail,
+  User,
+  ArrowRight,
+  ShieldCheck,
+  Wrench,
+} from "lucide-react";
 
 export default function Home() {
   const [fullName, setFullName] = useState("");
@@ -49,7 +56,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#07111f] font-sans text-white">
       <header
-        className={`fixed top-0 z-50 w-full border-b border-white/10 bg-[#07111f]/90 backdrop-blur-md transition-all duration-300 ${
+        className={`fixed top-0 z-50 w-full border-b border-white/10 bg-[#07111f]/95 backdrop-blur-md transition-all duration-300 ${
           scrolled ? "py-1 shadow-lg shadow-black/20" : "py-2"
         }`}
       >
@@ -58,14 +65,14 @@ export default function Home() {
             <a href="/" className="flex items-center">
               <div
                 className={`relative transition-all duration-300 ${
-                  scrolled ? "h-16 w-44" : "h-20 w-56 md:h-24 md:w-72"
+                  scrolled ? "h-14 w-40" : "h-18 w-52 md:h-20 md:w-60"
                 }`}
               >
                 <Image
                   src="/logo.png"
                   alt="IMPEDEX"
                   fill
-                  sizes="(max-width: 768px) 176px, 288px"
+                  sizes="(max-width: 768px) 160px, 240px"
                   className="object-contain object-left brightness-0 invert"
                   priority
                 />
@@ -73,12 +80,12 @@ export default function Home() {
             </a>
           </div>
 
-          <nav className="absolute left-1/2 hidden -translate-x-1/2 gap-20 text-xs font-bold uppercase tracking-[0.18em] text-white/80 lg:flex xl:gap-28">
+          <nav className="absolute left-1/2 hidden -translate-x-1/2 gap-16 text-sm font-semibold text-white/75 lg:flex xl:gap-24">
             {["Reparații", "Magazin", "Contact"].map((item) => (
               <a
                 key={item}
                 href={`#${item.toLowerCase()}`}
-                className="transition-colors hover:text-emerald-300"
+                className="transition-colors hover:text-white"
               >
                 {item}
               </a>
@@ -88,12 +95,12 @@ export default function Home() {
           <div className="flex flex-1 justify-end">
             <a
               href="/login"
-              className={`flex items-center gap-2 rounded-full border border-white/25 bg-white/5 font-bold uppercase tracking-widest text-white transition-all hover:border-emerald-300 hover:bg-white/10 ${
-                scrolled ? "px-4 py-2 text-[10px]" : "px-6 py-3 text-xs"
+              className={`flex items-center gap-2 rounded-md border border-white/20 bg-white px-5 py-2 text-sm font-semibold text-[#07111f] transition hover:bg-slate-100 ${
+                scrolled ? "px-4 py-2" : "px-5 py-2"
               }`}
             >
-              <User size={scrolled ? 14 : 18} />
-              <span>Cont Client</span>
+              <User size={16} />
+              <span>Cont client</span>
             </a>
           </div>
         </div>
@@ -104,41 +111,38 @@ export default function Home() {
           src="/repair.png"
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover opacity-50"
+          className="absolute inset-0 h-full w-full object-cover opacity-150"
         />
 
-        <div className="absolute inset-0 bg-gradient-to-r from-[#07111f] via-[#07111f]/85 to-[#07111f]/35" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#07111f] via-transparent to-[#07111f]/45" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#07111f] via-[#07111f]/80 to-[#07111f]/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#07111f] via-transparent to-[#07111f]/50" />
 
-        <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl items-center px-6 pt-24 lg:px-8">
-          <div className="max-w-3xl">
-        
+        <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl items-start px-6 pt-52 lg:px-8 lg:pt-56">
+          <div className="max-w-4xl">
 
-            <h1 className="text-5xl font-black uppercase leading-[0.95] tracking-[-0.04em] text-white sm:text-7xl lg:text-8xl">
-              <span className="block">Reparații</span>
-              <span className="block">electronice</span>
-              <span className="block text-emerald-300">profesionale</span>
+            <h1 className="max-w-4xl text-5xl font-bold leading-tight tracking-[-0.03em] text-white sm:text-6xl lg:text-7xl">
+              Service electronic și produse verificate
             </h1>
 
-            <p className="mt-8 max-w-xl text-base leading-8 text-slate-300 sm:text-lg">
-              Diagnoză reală, intervenții profesionale și produse verificate
-              înainte de vânzare.
+            <p className="mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
+              Reparații pentru televizoare, laptopuri și alte electronice, plus
+              produse second-hand testate înainte de vânzare.
             </p>
 
-            <div className="mt-12 flex flex-col gap-4 sm:flex-row">
+            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
               <a
                 href="#contact"
-                className="inline-flex items-center justify-center rounded-full bg-emerald-400 px-9 py-4 text-[11px] font-black uppercase tracking-[0.2em] text-[#07111f] transition-all hover:bg-emerald-300"
+                className="inline-flex items-center justify-center rounded-md bg-[#1f6f5b] px-7 py-3 text-sm font-semibold text-white transition hover:bg-[#195c4b]"
               >
                 Programează reparație
               </a>
 
               <a
                 href="#magazin"
-                className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/5 px-9 py-4 text-[11px] font-black uppercase tracking-[0.2em] text-white transition-all hover:bg-white/10"
+                className="inline-flex items-center justify-center gap-2 rounded-md bg-white px-7 py-3 text-sm font-semibold text-[#07111f] transition hover:bg-slate-100"
               >
                 Vezi produse
-                <ArrowRight size={15} className="ml-2" />
+                <ArrowRight size={15} />
               </a>
             </div>
           </div>
@@ -149,21 +153,19 @@ export default function Home() {
         <div className="mx-auto max-w-7xl">
           <div className="mb-14 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="mb-3 text-xs font-black uppercase tracking-[0.25em] text-emerald-300">
+              <p className="mb-3 text-sm font-semibold text-emerald-300">
                 Magazin
               </p>
-              <h2 className="text-4xl font-black uppercase">
-                Produse verificate
-              </h2>
-              <p className="mt-3 max-w-xl font-medium text-white/55">
-                Produse testate înainte de vânzare, pregătite pentru utilizare
-                reală.
+              <h2 className="text-4xl font-bold">Produse verificate</h2>
+              <p className="mt-3 max-w-xl font-medium text-white/60">
+                Produse second hand testate înainte de vânzare, pregătite pentru
+                utilizare reală.
               </p>
             </div>
 
             <a
               href="#contact"
-              className="flex w-fit items-center gap-2 rounded-full border border-white/15 px-5 py-3 text-xs font-black uppercase tracking-widest text-white/80 transition-all hover:bg-white/10"
+              className="flex w-fit items-center gap-2 rounded-md bg-white px-5 py-3 text-sm font-semibold text-[#07111f] transition hover:bg-slate-100"
             >
               Cere ofertă
               <ArrowRight size={16} />
@@ -171,61 +173,62 @@ export default function Home() {
           </div>
 
           <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-4">
-            {["Laptop verificat", "Monitor testat", "Componente", "Gadgeturi"].map(
-              (item) => (
-                <div
-                  key={item}
-                  className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-5 transition-all hover:-translate-y-1 hover:bg-white/[0.07]"
-                >
-                  <div className="mb-6 flex aspect-square items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04]">
-                    <Wrench size={34} className="text-emerald-300/60" />
-                  </div>
-                  <h3 className="text-lg font-black">{item}</h3>
-                  <p className="mt-2 text-sm font-medium text-white/45">
-                    Testat și pregătit pentru vânzare.
-                  </p>
+            {[
+              "Laptop verificat",
+              "Monitor testat",
+              "Componente",
+              "Gadgeturi",
+            ].map((item) => (
+              <div
+                key={item}
+                className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 transition hover:bg-white/[0.07]"
+              >
+                <div className="mb-6 flex aspect-square items-center justify-center rounded-xl border border-white/10 bg-white/[0.04]">
+                  <Wrench size={34} className="text-emerald-300/60" />
                 </div>
-              )
-            )}
+                <h3 className="text-lg font-semibold">{item}</h3>
+                <p className="mt-2 text-sm font-medium text-white/50">
+                  Testat și pregătit pentru vânzare.
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       <section id="contact" className="bg-[#07111f] px-6 py-24 text-white">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1fr_1.5fr]">
-          <div className="rounded-[3rem] border border-white/10 bg-white/[0.04] p-12 shadow-2xl shadow-black/20">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-white/70">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-10 shadow-2xl shadow-black/20">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-md border border-white/15 px-4 py-2 text-sm font-semibold text-white/70">
               <ShieldCheck size={14} className="text-emerald-300" />
               Ticket direct în sistem
             </div>
 
-            <h2 className="mb-8 text-5xl font-black leading-tight">
-              Hai să
-              <br />
-              vorbim.
+            <h2 className="mb-8 text-5xl font-bold leading-tight">
+              Hai să vorbim.
             </h2>
 
-            <p className="max-w-sm text-sm font-medium leading-7 text-white/55">
-              Trimite solicitarea, iar cererea ajunge direct în sistemul
-              IMPEDEX pentru urmărire și administrare.
+            <p className="max-w-sm text-sm font-medium leading-7 text-white/60">
+              Trimite solicitarea, iar cererea ajunge direct în sistemul IMPEDEX
+              pentru urmărire și administrare.
             </p>
 
             <div className="mt-12 space-y-6">
-              <div className="flex items-center gap-4 font-bold">
+              <div className="flex items-center gap-4 font-semibold">
                 <Mail className="text-emerald-300" />
                 contact@impedex.ro
               </div>
 
-              <div className="flex items-center gap-4 font-bold">
+              <div className="flex items-center gap-4 font-semibold">
                 <Phone className="text-emerald-300" />
                 +40 7xx xxx xxx
               </div>
             </div>
           </div>
 
-          <div className="rounded-[3rem] border border-slate-200 bg-white p-10 text-slate-900 shadow-2xl shadow-black/25">
+          <div className="rounded-2xl border border-slate-200 bg-white p-10 text-slate-900 shadow-2xl shadow-black/25">
             {formSubmitted ? (
-              <div className="py-20 text-center font-black uppercase text-green-600">
+              <div className="py-20 text-center font-semibold text-green-600">
                 Solicitare trimisă cu succes!
               </div>
             ) : (
@@ -237,7 +240,7 @@ export default function Home() {
                     required
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-5 font-bold outline-none transition-all focus:border-emerald-600 focus:bg-white"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 p-5 font-medium outline-none transition focus:border-emerald-600 focus:bg-white"
                   />
 
                   <input
@@ -246,7 +249,7 @@ export default function Home() {
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-5 font-bold outline-none transition-all focus:border-emerald-600 focus:bg-white"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 p-5 font-medium outline-none transition focus:border-emerald-600 focus:bg-white"
                   />
                 </div>
 
@@ -256,7 +259,7 @@ export default function Home() {
                   required
                   value={deviceType}
                   onChange={(e) => setDeviceType(e.target.value)}
-                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-5 font-bold outline-none transition-all focus:border-emerald-600 focus:bg-white"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 p-5 font-medium outline-none transition focus:border-emerald-600 focus:bg-white"
                 />
 
                 <textarea
@@ -265,13 +268,13 @@ export default function Home() {
                   required
                   value={issueDescription}
                   onChange={(e) => setIssueDescription(e.target.value)}
-                  className="w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 p-5 font-bold outline-none transition-all focus:border-emerald-600 focus:bg-white"
+                  className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 p-5 font-medium outline-none transition focus:border-emerald-600 focus:bg-white"
                 />
 
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full rounded-2xl bg-[#0b3d2e] py-6 font-black uppercase tracking-widest text-white transition-all hover:bg-[#0f4d3a] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="w-full rounded-md bg-[#1f6f5b] py-4 text-sm font-semibold text-white transition hover:bg-[#195c4b] disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {isSubmitting ? "Se trimite..." : "Trimite solicitarea"}
                 </button>
@@ -282,8 +285,9 @@ export default function Home() {
       </section>
 
       <footer className="border-t border-white/10 bg-[#07111f] px-6 py-12 text-center text-white">
-        <p className="text-[10px] font-black uppercase tracking-widest text-white/40">
-          © {new Date().getFullYear()} IMPEDEX · Reparații Electronice Profesionale
+        <p className="text-sm text-white/45">
+          © {new Date().getFullYear()} IMPEDEX · Reparații Electronice
+          Profesionale
         </p>
       </footer>
     </main>
