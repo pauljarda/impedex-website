@@ -4,17 +4,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import Image from "next/image";
-import { ShieldCheck, Zap, ArrowLeft, Lock, Mail, User } from "lucide-react";
-
-// THEME CONFIG - Matching Home Page
-const theme = {
-  primary: "#0b3d2e",    // Deep Emerald
-  secondary: "#041b4a",  // Deep Navy
-  accent: "#f59e0b",     // Gold
-  bg: "#f8fafc",         // Clean Slate
-  text: "#1e293b",
-  muted: "#64748b"
-};
+import { ArrowLeft, Lock, Mail, User, ShieldCheck } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -30,6 +20,7 @@ export default function LoginPage() {
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
     setLoading(true);
     setMessage("");
     setError("");
@@ -46,7 +37,10 @@ export default function LoginPage() {
         return;
       }
 
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
 
       if (userError || !user) {
         setError("Eroare la încărcarea utilizatorului.");
@@ -67,11 +61,13 @@ export default function LoginPage() {
       }
 
       setLoading(false);
+
       if (profile.role === "admin") {
         router.push("/admin");
       } else {
         router.push("/account");
       }
+
       return;
     }
 
@@ -95,103 +91,123 @@ export default function LoginPage() {
     setPassword("");
   }
 
+  function switchMode(mode: boolean) {
+    setIsLoginMode(mode);
+    setMessage("");
+    setError("");
+  }
+
   return (
-    <main style={{ backgroundColor: theme.bg, color: theme.text }} className="relative min-h-screen overflow-hidden font-sans">
-      
-      {/* DECORATIVE BACKGROUND SHAPES (From Home Page) */}
-      <div className="absolute top-0 right-0 h-[500px] w-[500px] rounded-full opacity-5 blur-3xl" style={{ backgroundColor: theme.primary }} />
-      <div className="absolute bottom-0 left-0 h-[600px] w-[600px] rounded-full opacity-5 blur-3xl" style={{ backgroundColor: theme.secondary }} />
-      <div className="absolute top-1/2 left-1/2 h-64 w-64 rounded-full opacity-5 blur-2xl -translate-x-1/2" style={{ backgroundColor: theme.accent }} />
-
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col px-6">
-        
-        {/* SIMPLE HEADER */}
-       {/* UPDATED LOGIN HEADER */}
-<header className="flex items-center justify-between py-10">
-  <a href="/" className="flex items-center gap-2 transition-transform hover:scale-105">
-    {/* Increased size to h-20 w-48 to make sub-text visible */}
-    <div className="relative h-20 w-48 md:h-24 md:w-56">
-      <Image 
-        src="/logo.png" 
-        alt="IMPEDEX" 
-        fill
-        sizes='( max-width: 768px ) 150px, ( max-width: 1200px ) 200px, 250px' 
-        className="object-contain" // Removed object-left for better balance
-        priority
+    <main className="relative min-h-screen overflow-hidden bg-[#07111f] font-sans text-white">
+      <img
+        src="/repair.png"
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 h-full w-full object-cover opacity-20"
       />
-    </div>
-  </a>
-  <a href="/" className="flex items-center gap-2 text-sm font-bold opacity-60 hover:opacity-100 transition-opacity">
-    <ArrowLeft size={16} /> Înapoi la site
-  </a>
-</header>
 
-        <div className="grid flex-1 items-center gap-12 lg:grid-cols-2 pb-12">
-          
-          {/* LEFT SIDE: BRANDING */}
-          <section className="hidden lg:block">
-            <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-black uppercase tracking-widest text-white mb-6" style={{ backgroundColor: theme.secondary }}>
-              <ShieldCheck size={14} /> Acces Securizat
+      <div className="absolute inset-0 bg-gradient-to-r from-[#07111f] via-[#07111f]/92 to-[#07111f]/78" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#07111f] via-transparent to-[#07111f]/70" />
+
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-6xl flex-col px-6">
+        <header className="flex items-center justify-between py-8">
+          <a href="/" className="flex items-center">
+            <div className="relative h-20 w-56 md:h-24 md:w-72">
+              <Image
+                src="/logo.png"
+                alt="IMPEDEX"
+                fill
+                sizes="(max-width: 768px) 224px, 288px"
+                className="object-contain object-left brightness-0 invert"
+                priority
+              />
             </div>
-            <h1 className="text-5xl font-black leading-tight" style={{ color: theme.secondary }}>
-              Gestionați reparațiile <br />
-              <span style={{ color: theme.primary }}>într-un singur loc.</span>
+          </a>
+
+          <a
+            href="/"
+            className="flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 py-3 text-xs font-bold uppercase tracking-widest text-white/75 transition-all hover:bg-white/10 hover:text-white"
+          >
+            <ArrowLeft size={15} />
+            Înapoi la site
+          </a>
+        </header>
+
+        <div className="grid flex-1 items-center gap-12 pb-14 lg:grid-cols-[1fr_440px]">
+          <section className="hidden max-w-xl lg:block">
+            <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 py-2 text-[10px] font-bold uppercase tracking-[0.24em] text-white/75">
+              <ShieldCheck size={14} className="text-emerald-300" />
+              Acces securizat
+            </div>
+
+            <h1 className="text-5xl font-black uppercase leading-[0.95] tracking-[-0.04em] text-white xl:text-6xl">
+              Gestionează
+              <span className="block">reparațiile</span>
+              <span className="block text-emerald-300">într-un singur loc</span>
             </h1>
-            <p className="mt-6 text-lg leading-relaxed max-w-md" style={{ color: theme.muted }}>
-              Autentifică-te pentru a vedea statusul ticketelor tale sau pentru a accesa panoul de administrare IMPEDEX.
+
+            <p className="mt-7 max-w-md text-base leading-8 text-slate-300">
+        
             </p>
-            
-            <div className="mt-10 flex items-center gap-4 text-sm font-bold" style={{ color: theme.secondary }}>
-              <div className="flex -space-x-2">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="h-8 w-8 rounded-full border-2 border-white bg-slate-200" />
-                ))}
-              </div>
-              <span>Alătură-te celor peste 500 de clienți mulțumiți.</span>
-            </div>
           </section>
 
-          {/* RIGHT SIDE: LOGIN CARD */}
-          <section className="mx-auto w-full max-w-md">
-            <div className="rounded-[2.5rem] border border-slate-200 bg-white/70 p-8 shadow-2xl backdrop-blur-xl md:p-10">
-              
+          <section className="mx-auto w-full max-w-[440px]">
+            <div className="rounded-[2.5rem] border border-white/10 bg-white p-8 text-slate-900 shadow-2xl shadow-black/35 md:p-9">
               <div className="mb-8 flex rounded-2xl bg-slate-100 p-1">
                 <button
-                  onClick={() => setIsLoginMode(true)}
-                  className={`flex-1 rounded-xl py-2.5 text-sm font-bold transition-all ${isLoginMode ? 'bg-white shadow-sm' : 'opacity-50 hover:opacity-100'}`}
-                  style={{ color: theme.secondary }}
+                  type="button"
+                  onClick={() => switchMode(true)}
+                  className={`flex-1 rounded-xl py-2.5 text-sm font-black transition-all ${
+                    isLoginMode
+                      ? "bg-white text-[#07111f] shadow-sm"
+                      : "text-slate-500 hover:text-[#07111f]"
+                  }`}
                 >
                   Autentificare
                 </button>
+
                 <button
-                  onClick={() => setIsLoginMode(false)}
-                  className={`flex-1 rounded-xl py-2.5 text-sm font-bold transition-all ${!isLoginMode ? 'bg-white shadow-sm' : 'opacity-50 hover:opacity-100'}`}
-                  style={{ color: theme.secondary }}
+                  type="button"
+                  onClick={() => switchMode(false)}
+                  className={`flex-1 rounded-xl py-2.5 text-sm font-black transition-all ${
+                    !isLoginMode
+                      ? "bg-white text-[#07111f] shadow-sm"
+                      : "text-slate-500 hover:text-[#07111f]"
+                  }`}
                 >
-                  Cont Nou
+                  Cont nou
                 </button>
               </div>
 
-              <div className="mb-8">
-                <h2 className="text-2xl font-black" style={{ color: theme.secondary }}>
+              <div className="mb-7">
+                <h2 className="text-2xl font-black text-[#07111f]">
                   {isLoginMode ? "Bine ai revenit!" : "Creează un cont"}
                 </h2>
-                <p className="text-sm mt-1" style={{ color: theme.muted }}>
-                  {isLoginMode ? "Introdu datele pentru a accesa platforma." : "Completează datele pentru a începe."}
+                <p className="mt-1 text-sm font-medium text-slate-500">
+                  {isLoginMode
+                    ? "Introdu datele pentru a accesa platforma."
+                    : "Completează datele pentru a începe."}
                 </p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-5">
                 {!isLoginMode && (
                   <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest" style={{ color: theme.muted }}>Nume Complet</label>
+                    <label className="text-xs font-black uppercase tracking-widest text-slate-500">
+                      Nume complet
+                    </label>
+
                     <div className="relative">
-                      <User className="absolute left-4 top-1/2 -translate-y-1/2 opacity-30" size={18} />
+                      <User
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                        size={18}
+                      />
                       <input
                         type="text"
+                        required={!isLoginMode}
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
-                        className="w-full rounded-2xl border border-slate-100 bg-white p-4 pl-12 outline-none transition-all focus:border-[#0b3d2e] focus:ring-4 focus:ring-[#0b3d2e]/5"
+                        className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 pl-12 font-semibold outline-none transition-all focus:border-emerald-600 focus:bg-white"
                         placeholder="Ex: Popescu Ion"
                       />
                     </div>
@@ -199,56 +215,85 @@ export default function LoginPage() {
                 )}
 
                 <div className="space-y-2">
-                  <label className="text-xs font-black uppercase tracking-widest" style={{ color: theme.muted }}>Email</label>
+                  <label className="text-xs font-black uppercase tracking-widest text-slate-500">
+                    Email
+                  </label>
+
                   <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 opacity-30" size={18} />
+                    <Mail
+                      className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                      size={18}
+                    />
                     <input
                       type="email"
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full rounded-2xl border border-slate-100 bg-white p-4 pl-12 outline-none transition-all focus:border-[#0b3d2e] focus:ring-4 focus:ring-[#0b3d2e]/5"
+                      className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 pl-12 font-semibold outline-none transition-all focus:border-emerald-600 focus:bg-white"
                       placeholder="nume@email.com"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-black uppercase tracking-widest" style={{ color: theme.muted }}>Parolă</label>
+                  <label className="text-xs font-black uppercase tracking-widest text-slate-500">
+                    Parolă
+                  </label>
+
                   <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 opacity-30" size={18} />
+                    <Lock
+                      className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                      size={18}
+                    />
                     <input
                       type="password"
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full rounded-2xl border border-slate-100 bg-white p-4 pl-12 outline-none transition-all focus:border-[#0b3d2e] focus:ring-4 focus:ring-[#0b3d2e]/5"
+                      className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 pl-12 font-semibold outline-none transition-all focus:border-emerald-600 focus:bg-white"
                       placeholder="••••••••"
                     />
                   </div>
                 </div>
 
-                {message && <p className="text-sm font-bold text-green-600 bg-green-50 p-3 rounded-xl">{message}</p>}
-                {error && <p className="text-sm font-bold text-red-500 bg-red-50 p-3 rounded-xl">{error}</p>}
+                {message && (
+                  <p className="rounded-xl bg-green-50 p-3 text-sm font-bold text-green-700">
+                    {message}
+                  </p>
+                )}
+
+                {error && (
+                  <p className="rounded-xl bg-red-50 p-3 text-sm font-bold text-red-600">
+                    {error}
+                  </p>
+                )}
 
                 <button
                   type="submit"
                   disabled={loading}
-                  style={{ backgroundColor: isLoginMode ? theme.secondary : theme.primary }}
-                  className="w-full rounded-2xl py-4 text-lg font-black uppercase tracking-widest text-white shadow-xl transition-all hover:brightness-110 active:scale-95 disabled:opacity-50"
+                  className={`w-full rounded-2xl py-4 text-base font-black uppercase tracking-widest text-white transition-all disabled:cursor-not-allowed disabled:opacity-50 ${
+                    isLoginMode
+                      ? "bg-[#07111f] hover:bg-[#0c1b31]"
+                      : "bg-[#0b3d2e] hover:bg-[#0f4d3a]"
+                  }`}
                 >
-                  {loading ? "Se procesează..." : isLoginMode ? "Autentificare" : "Creează Cont"}
+                  {loading
+                    ? "Se procesează..."
+                    : isLoginMode
+                    ? "Autentificare"
+                    : "Creează cont"}
                 </button>
               </form>
 
-              <div className="mt-8 text-center">
+              <div className="mt-7 text-center">
                 <button
                   type="button"
-                  onClick={() => setIsLoginMode(!isLoginMode)}
-                  className="text-sm font-bold hover:underline"
-                  style={{ color: theme.secondary }}
+                  onClick={() => switchMode(!isLoginMode)}
+                  className="text-sm font-bold text-[#07111f] hover:underline"
                 >
-                  {isLoginMode ? "Nu ai cont? Înregistrează-te" : "Ai deja cont? Autentifică-te"}
+                  {isLoginMode
+                    ? "Nu ai cont? Înregistrează-te"
+                    : "Ai deja cont? Autentifică-te"}
                 </button>
               </div>
             </div>

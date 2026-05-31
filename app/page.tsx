@@ -117,7 +117,7 @@ export default function Home() {
             <h1 className="text-5xl font-black uppercase leading-[0.95] tracking-[-0.04em] text-white sm:text-7xl lg:text-8xl">
               <span className="block">Reparații</span>
               <span className="block">electronice</span>
-              <span className="block text-emerald-300">pe bune</span>
+              <span className="block text-emerald-300">profesionale</span>
             </h1>
 
             <p className="mt-8 max-w-xl text-base leading-8 text-slate-300 sm:text-lg">
