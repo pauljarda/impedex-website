@@ -471,16 +471,6 @@ export default function Home() {
               </div>
             </div>
           </div>
-
-          <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04]">
-            <iframe
-              title="IMPEDEX Sângeorz-Băi"
-              src="https://www.google.com/maps?q=S%C3%A2ngeorz-B%C4%83i,%20Bistri%C8%9Ba-N%C4%83s%C4%83ud,%20Romania&output=embed"
-              className="h-[360px] w-full border-0 lg:h-full"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-          </div>
         </div>
 
         <div className="mx-auto mt-14 flex max-w-7xl flex-col gap-4 border-t border-white/10 pt-8 text-sm text-white/40 md:flex-row md:items-center md:justify-between">
