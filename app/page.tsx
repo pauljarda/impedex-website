@@ -644,10 +644,6 @@ export default function Home() {
                     <Phone size={15} className="text-emerald-300" />
                     +40 7xx xxx xxx
                   </p>
-                  <p className="flex items-start gap-2">
-                    <MapPin size={15} className="mt-1 text-emerald-300" />
-                    Sângeorz-Băi, Bistrița-Năsăud
-                  </p>
                 </div>
 
                 <a
