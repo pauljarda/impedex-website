@@ -1,7 +1,7 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -20,6 +20,9 @@ import {
   Wrench,
   PackageCheck,
   Plus,
+  Activity,
+  Cpu,
+  Zap,
 } from "lucide-react";
 
 const fadeUp = {
@@ -36,165 +39,366 @@ const stagger = {
   },
 };
 
-function PcbBoard({ idPrefix }: { idPrefix: string }) {
-  const glow = `${idPrefix}Glow`;
-  const soft = `${idPrefix}Soft`;
-  const dot = `${idPrefix}Dot`;
+function PcbCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let raf: number;
+    const LABELS = ["3.3V", "CLK", "12V", "PWM", "GND", "SPI", "5V", "I2C", "VCC", "UART", "100R", "MOSFET", "RESET", "TX", "RX", "EN"];
+
+    type Node = {
+      col: number; row: number; x: number; y: number;
+      pulse: number; pulseSpeed: number;
+      labelIdx: number; showLabel: boolean; labelTimer: number; labelDur: number;
+      isChip: boolean;
+    };
+    type Edge = { a: Node; b: Node };
+    type Signal = { edge: Edge; t: number; speed: number; alpha: number; reverse: boolean };
+
+    let W = 0, H = 0;
+    let nodes: Node[] = [];
+    let edges: Edge[] = [];
+    let signals: Signal[] = [];
+
+    const spawnSignal = () => {
+      if (edges.length === 0) return;
+      const edge = edges[Math.floor(Math.random() * edges.length)];
+      signals.push({
+        edge,
+        t: 0,
+        speed: 0.002 + Math.random() * 0.005,
+        alpha: 0.7 + Math.random() * 0.3,
+        reverse: Math.random() > 0.5,
+      });
+    };
+
+    const buildScene = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = canvas.offsetWidth;
+      H = canvas.offsetHeight;
+      canvas.width = W * dpr;
+      canvas.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      /* iso projection — diamond grid centered, covers whole viewport */
+      const tileW = 96;
+      const tileH = 44;
+      const ox = W * 0.5;
+      const oy = -H * 0.25;
+      const iso = (col: number, row: number) => ({
+        x: ox + (col - row) * (tileW / 2),
+        y: oy + (col + row) * (tileH / 2),
+      });
+
+      nodes = [];
+      edges = [];
+      signals = [];
+
+      /* generous range + offscreen culling so the grid always fills the screen */
+      const RANGE = Math.ceil((W + H * 2) / tileH) + 8;
+      for (let c = -RANGE; c < RANGE; c += 2) {
+        for (let r = -RANGE; r < RANGE; r += 2) {
+          const { x, y } = iso(c, r);
+          if (x < -60 || x > W + 60 || y < -60 || y > H + 60) continue;
+          nodes.push({
+            col: c, row: r, x, y,
+            pulse: Math.random() * Math.PI * 2,
+            pulseSpeed: 0.008 + Math.random() * 0.014,
+            labelIdx: Math.floor(Math.random() * LABELS.length),
+            showLabel: Math.random() > 0.78,
+            labelTimer: Math.floor(Math.random() * 200),
+            labelDur: 140 + Math.random() * 200,
+            isChip: Math.random() > 0.92,
+          });
+        }
+      }
+
+      const nodeMap = new Map<string, Node>();
+      nodes.forEach(n => nodeMap.set(`${n.col},${n.row}`, n));
+      nodes.forEach(n => {
+        const right = nodeMap.get(`${n.col + 2},${n.row}`);
+        const down = nodeMap.get(`${n.col},${n.row + 2}`);
+        if (right) edges.push({ a: n, b: right });
+        if (down) edges.push({ a: n, b: down });
+      });
+
+      for (let i = 0; i < 36; i++) spawnSignal();
+    };
+
+    const draw = () => {
+      ctx.clearRect(0, 0, W, H);
+
+      /* Base grid lines */
+      ctx.lineWidth = 0.7;
+      ctx.strokeStyle = "rgba(31,111,91,0.22)";
+      ctx.beginPath();
+      edges.forEach(({ a, b }) => {
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+      });
+      ctx.stroke();
+
+      /* Brighter accent traces */
+      ctx.lineWidth = 1.3;
+      edges.forEach(({ a, b }, i) => {
+        if (i % 5 !== 0) return;
+        const grad = ctx.createLinearGradient(a.x, a.y, b.x, b.y);
+        grad.addColorStop(0, "rgba(52,211,153,0)");
+        grad.addColorStop(0.5, "rgba(52,211,153,0.28)");
+        grad.addColorStop(1, "rgba(52,211,153,0)");
+        ctx.strokeStyle = grad;
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
+      });
+
+      /* Nodes */
+      nodes.forEach(n => {
+        n.pulse += n.pulseSpeed;
+        const glow = 0.45 + 0.55 * Math.sin(n.pulse);
+
+        if (n.isChip) {
+          /* small iso chip */
+          ctx.strokeStyle = `rgba(52,211,153,${0.3 + 0.25 * glow})`;
+          ctx.fillStyle = "rgba(10,31,24,0.85)";
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(n.x, n.y - 9);
+          ctx.lineTo(n.x + 16, n.y);
+          ctx.lineTo(n.x, n.y + 9);
+          ctx.lineTo(n.x - 16, n.y);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+        } else {
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, 4.5, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(52,211,153,${0.22 * glow})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, 2, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(167,243,208,${0.45 + 0.45 * glow})`;
+          ctx.fill();
+        }
+
+        /* Radar ping */
+        const ping = Math.sin(n.pulse * 0.35);
+        if (ping > 0.96) {
+          const r = ((ping - 0.96) / 0.04) * 30;
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(110,231,183,${0.45 * (1 - r / 30)})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+
+        /* Floating label */
+        if (n.showLabel) {
+          n.labelTimer++;
+          const cycle = n.labelTimer % n.labelDur;
+          const fadeIn = Math.min(cycle / 25, 1);
+          const fadeOut = Math.min((n.labelDur - cycle) / 25, 1);
+          const alpha = Math.min(fadeIn, fadeOut) * 0.65;
+          const drift = (cycle / n.labelDur) * 16;
+          ctx.font = "600 10px ui-monospace, monospace";
+          ctx.fillStyle = `rgba(110,231,183,${alpha})`;
+          ctx.fillText(LABELS[n.labelIdx], n.x + 8, n.y - 6 - drift);
+          if (cycle === 0) n.labelIdx = Math.floor(Math.random() * LABELS.length);
+        }
+      });
+
+      /* Travelling signals with comet tail */
+      for (let i = signals.length - 1; i >= 0; i--) {
+        const s = signals[i];
+        s.t += s.speed;
+        if (s.t >= 1) {
+          signals.splice(i, 1);
+          spawnSignal();
+          continue;
+        }
+        const t = s.reverse ? 1 - s.t : s.t;
+        const { a, b } = s.edge;
+        const x = a.x + (b.x - a.x) * t;
+        const y = a.y + (b.y - a.y) * t;
+
+        /* tail */
+        const tailT = Math.max(0, Math.min(1, t + (s.reverse ? 0.1 : -0.1)));
+        const tx = a.x + (b.x - a.x) * tailT;
+        const ty = a.y + (b.y - a.y) * tailT;
+        const tail = ctx.createLinearGradient(tx, ty, x, y);
+        tail.addColorStop(0, "rgba(52,211,153,0)");
+        tail.addColorStop(1, `rgba(52,211,153,${s.alpha * 0.5})`);
+        ctx.strokeStyle = tail;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(tx, ty);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+
+        /* head */
+        const grad = ctx.createRadialGradient(x, y, 0, x, y, 8);
+        grad.addColorStop(0, `rgba(212,252,234,${s.alpha})`);
+        grad.addColorStop(0.4, `rgba(52,211,153,${s.alpha * 0.55})`);
+        grad.addColorStop(1, "rgba(52,211,153,0)");
+        ctx.beginPath();
+        ctx.arc(x, y, 8, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.fill();
+      }
+
+      raf = requestAnimationFrame(draw);
+    };
+
+    buildScene();
+    draw();
+
+    let resizeTimer: ReturnType<typeof setTimeout>;
+    const onResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(buildScene, 150);
+    };
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(resizeTimer);
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
+
   return (
-    <svg
-      className="h-full w-full"
-      preserveAspectRatio="xMidYMid slice"
-      viewBox="0 0 600 760"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      <defs>
-        <radialGradient id={dot}>
-          <stop offset="0%" stopColor="#6ee7b7" stopOpacity="1" />
-          <stop offset="100%" stopColor="#34d399" stopOpacity="0" />
-        </radialGradient>
-        <filter id={glow}>
-          <feGaussianBlur stdDeviation="1.4" result="b" />
-          <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
-        </filter>
-        <filter id={soft}><feGaussianBlur stdDeviation="0.3" /></filter>
-      </defs>
+    <>
+      <canvas
+        ref={canvasRef}
+        className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-60"
+        aria-hidden="true"
+      />
+      {/* subtle dark vignette so text stays readable over the animation */}
+      <div
+        className="pointer-events-none fixed inset-0 z-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 70% 60% at 30% 45%, rgba(7,17,31,0.82) 0%, rgba(7,17,31,0.35) 55%, transparent 100%)",
+        }}
+      />
+    </>
+  );
+}
 
-      {/* Grid */}
-      <g stroke="#1f6f5b" strokeWidth="0.5" opacity="0.12" fill="none">
-        {Array.from({ length: 13 }, (_, i) => (
-          <line key={`h${i}`} x1="0" y1={60 * i} x2="600" y2={60 * i} />
-        ))}
-        {Array.from({ length: 11 }, (_, i) => (
-          <line key={`v${i}`} x1={60 * i} y1="0" x2={60 * i} y2="760" />
-        ))}
-      </g>
+function DiagBanner() {
+  const [readout, setReadout] = useState({ v: "12.04", hz: "50.0", temp: "36.8" });
+  const [mosfetDone, setMosfetDone] = useState(false);
 
-      {/* Primary traces (draw in) */}
-      <g className="pcb-trace" stroke="#34d399" strokeWidth="1.4" fill="none" opacity="0.5" filter={`url(#${soft})`}>
-        <line x1="80" y1="80" x2="80" y2="680" />
-        <line x1="300" y1="80" x2="300" y2="680" />
-        <line x1="520" y1="80" x2="520" y2="680" />
-        <line x1="80" y1="80" x2="520" y2="80" />
-        <line x1="300" y1="200" x2="520" y2="200" />
-        <line x1="80" y1="320" x2="300" y2="320" />
-        <line x1="300" y1="440" x2="520" y2="440" />
-        <line x1="80" y1="560" x2="300" y2="560" />
-        <line x1="80" y1="680" x2="520" y2="680" />
-        <line x1="520" y1="200" x2="420" y2="200" />
-        <line x1="420" y1="200" x2="420" y2="320" />
-        <line x1="420" y1="320" x2="300" y2="320" />
-        <line x1="80" y1="320" x2="180" y2="320" />
-        <line x1="180" y1="320" x2="180" y2="440" />
-        <line x1="300" y1="560" x2="400" y2="560" />
-        <line x1="400" y1="560" x2="400" y2="680" />
-      </g>
+  useEffect(() => {
+    const id = setInterval(() => {
+      setReadout({
+        v: (11.9 + Math.random() * 0.35).toFixed(2),
+        hz: (49.8 + Math.random() * 0.4).toFixed(1),
+        temp: (36 + Math.random() * 2.5).toFixed(1),
+      });
+    }, 900);
+    const mosfetCycle = setInterval(() => setMosfetDone(p => !p), 4200);
+    return () => { clearInterval(id); clearInterval(mosfetCycle); };
+  }, []);
 
-      {/* Secondary traces */}
-      <g stroke="#1f6f5b" strokeWidth="0.8" fill="none" opacity="0.35" filter={`url(#${soft})`}>
-        <line x1="140" y1="140" x2="240" y2="140" />
-        <line x1="240" y1="140" x2="240" y2="260" />
-        <line x1="360" y1="120" x2="460" y2="120" />
-        <line x1="460" y1="380" x2="460" y2="500" />
-        <line x1="140" y1="600" x2="240" y2="600" />
-        <line x1="360" y1="500" x2="460" y2="500" />
-      </g>
+  return (
+    <div aria-hidden="true" className="relative z-10 border-y border-white/10 bg-[#0a1622]/65 backdrop-blur-md">
+      <style>{`
+        @keyframes hudWave { from { transform: translateX(0); } to { transform: translateX(-220px); } }
+        @keyframes hudBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+        @keyframes hudScan { 0%, 100% { left: 4%; } 50% { left: 92%; } }
+      `}</style>
 
-      {/* IC chips */}
-      <g fill="#0c2a20" stroke="#34d399" strokeWidth="1.2" opacity="0.6">
-        <rect x="120" y="360" width="90" height="64" rx="5" />
-        <rect x="350" y="240" width="64" height="90" rx="5" />
-        <rect x="440" y="120" width="64" height="84" rx="5" />
-        <rect x="330" y="600" width="84" height="60" rx="5" />
-      </g>
+      <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-8 gap-y-4 px-6 py-4 lg:px-8">
+        {/* ── Oscilloscope segment ── */}
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <Activity size={14} className="text-emerald-300" />
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-white/60">CH1</span>
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" style={{ animation: "hudBlink 1.3s ease-in-out infinite" }} />
+          </div>
 
-      {/* SMD pads */}
-      <g fill="none" stroke="#34d399" strokeWidth="1" opacity="0.5">
-        <rect x="68" y="188" width="24" height="24" rx="3" />
-        <rect x="288" y="308" width="24" height="24" rx="3" />
-        <rect x="508" y="428" width="24" height="24" rx="3" />
-        <rect x="168" y="548" width="24" height="24" rx="3" />
-        <rect x="388" y="188" width="24" height="24" rx="3" />
-      </g>
+          <div className="relative h-10 w-44 overflow-hidden rounded-md border border-white/5 bg-black/50">
+            <svg className="absolute inset-0 h-full w-full" viewBox="0 0 220 44" preserveAspectRatio="none">
+              <line x1="0" y1="22" x2="220" y2="22" stroke="#1f6f5b" strokeWidth="0.5" opacity="0.3" />
+              {[44, 88, 132, 176].map(x => (
+                <line key={x} x1={x} y1="0" x2={x} y2="44" stroke="#1f6f5b" strokeWidth="0.5" opacity="0.25" />
+              ))}
+            </svg>
+            <svg className="absolute inset-0 h-full w-full overflow-visible" viewBox="0 0 220 44">
+              <g style={{ animation: "hudWave 3.2s linear infinite" }}>
+                <path
+                  d="M0,22 q11,-30 22,0 t22,0 t22,0 t22,0 t22,0 t22,0 t22,0 t22,0 t22,0 t22,0 t22,0 t22,0 t22,0 t22,0 t22,0 t22,0 t22,0 t22,0 t22,0"
+                  fill="none"
+                  stroke="#34d399"
+                  strokeWidth="1.5"
+                  opacity="0.9"
+                />
+              </g>
+            </svg>
+            <div
+              className="absolute top-0 h-full w-px bg-gradient-to-b from-transparent via-emerald-300/80 to-transparent"
+              style={{ animation: "hudScan 3s ease-in-out infinite" }}
+            />
+          </div>
+        </div>
 
-      {/* Vias (pulsing) */}
-      <g className="pcb-via" fill="#34d399" opacity="0.85">
-        {[
-          [80,80],[300,80],[520,80],[300,200],[520,200],[80,320],[300,320],
-          [300,440],[520,440],[80,560],[300,560],[80,680],[300,680],[520,680],
-          [180,320],[180,440],[420,200],[420,320],[400,560],[400,680],
-        ].map(([cx, cy], i) => (
-          <g key={i}>
-            <circle cx={cx} cy={cy} r="5" fill="none" stroke="#34d399" strokeWidth="1.5" opacity="0.7" />
-            <circle cx={cx} cy={cy} r="2.4" />
-          </g>
-        ))}
-      </g>
+        {/* ── Readouts ── */}
+        <div className="flex items-center gap-2">
+          {[
+            { label: "Tensiune", value: `${readout.v} V` },
+            { label: "Frecvență", value: `${readout.hz} Hz` },
+            { label: "Temp.", value: `${readout.temp} °C` },
+          ].map(r => (
+            <div key={r.label} className="rounded-lg bg-white/[0.04] px-3 py-1.5 text-center">
+              <p className="text-[9px] uppercase tracking-wider text-white/40">{r.label}</p>
+              <p className="font-mono text-[13px] font-semibold tabular-nums text-emerald-300">{r.value}</p>
+            </div>
+          ))}
+        </div>
 
-      {/* Glow accents (pulsing) */}
-      <g className="pcb-glow" stroke="#6ee7b7" strokeWidth="1.6" fill="none" opacity="0.4" filter={`url(#${glow})`}>
-        <line x1="80" y1="80" x2="80" y2="680" />
-        <line x1="520" y1="80" x2="520" y2="680" />
-        <line x1="80" y1="80" x2="520" y2="80" />
-      </g>
+        <div className="hidden h-9 w-px bg-white/10 lg:block" />
 
-      {/* Continuous current flowing along the buses */}
-      <g className="pcb-flow" stroke="#a7f3d0" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.9" filter={`url(#${glow})`}>
-        <line x1="80" y1="80" x2="80" y2="680" />
-        <line x1="520" y1="80" x2="520" y2="680" />
-        <line x1="300" y1="80" x2="300" y2="680" />
-        <line x1="80" y1="80" x2="520" y2="80" />
-        <line x1="80" y1="680" x2="520" y2="680" />
-        <line x1="80" y1="320" x2="300" y2="320" />
-        <line x1="300" y1="440" x2="520" y2="440" />
-      </g>
+        {/* ── Diagnostic inline ── */}
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+          <div className="flex items-center gap-2">
+            <Cpu size={13} className="text-emerald-300" />
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-white/60">Diagnostic</span>
+          </div>
+          {[
+            { name: "Sursă", ok: true },
+            { name: "Condensatori", ok: true },
+            { name: "MOSFET Q3", ok: mosfetDone },
+          ].map(row => (
+            <div key={row.name} className="flex items-center gap-2 text-[12px]">
+              <span className="text-white/55">{row.name}</span>
+              {row.ok ? (
+                <span className="font-mono text-[11px] font-semibold text-emerald-300">OK</span>
+              ) : (
+                <span className="flex items-center gap-1.5 font-mono text-[11px] text-amber-300">
+                  <span className="h-1 w-1 rounded-full bg-amber-300" style={{ animation: "hudBlink 0.8s infinite" }} />
+                  test…
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
 
-      {/* Radar ping rings from key junctions */}
-      <g fill="none" stroke="#6ee7b7" strokeWidth="1.5">
-        {[
-          [80, 80], [520, 680], [300, 440], [520, 200], [180, 440],
-        ].map(([cx, cy], i) => (
-          <circle key={i} cx={cx} cy={cy} r="4">
-            <animate attributeName="r" values="3;28" dur="3s" begin={`${i * 0.6}s`} repeatCount="indefinite" />
-            <animate attributeName="opacity" values="0.9;0" dur="3s" begin={`${i * 0.6}s`} repeatCount="indefinite" />
-          </circle>
-        ))}
-      </g>
-
-      {/* Twinkling bright vias */}
-      <g fill="#a7f3d0" filter={`url(#${glow})`}>
-        {[
-          [300, 80], [80, 320], [520, 440], [400, 680], [300, 200], [80, 560],
-        ].map(([cx, cy], i) => (
-          <circle
-            key={i}
-            cx={cx}
-            cy={cy}
-            r="3"
-            className="pcb-twinkle"
-            style={{ animationDelay: `${i * 0.4}s` }}
-          />
-        ))}
-      </g>
-
-      {/* Flowing signal comets (bright + many) */}
-      <g filter={`url(#${glow})`}>
-        {[
-          { d: "M80,80 L80,680", dur: "3.5s" },
-          { d: "M520,80 L520,680", dur: "4.2s" },
-          { d: "M300,80 L300,680", dur: "5s" },
-          { d: "M80,80 L520,80", dur: "3s" },
-          { d: "M80,680 L520,680", dur: "3.4s" },
-          { d: "M520,200 L420,200 L420,320 L300,320", dur: "4.5s" },
-          { d: "M80,320 L300,320 L300,440 L520,440", dur: "5.5s" },
-          { d: "M80,80 L180,80 L180,320 L80,320", dur: "4s" },
-        ].map((p, i) => (
-          <circle key={i} r="6" fill={`url(#${dot})`}>
-            <animateMotion dur={p.dur} repeatCount="indefinite" path={p.d} begin={`${i * 0.45}s`} />
-          </circle>
-        ))}
-      </g>
-    </svg>
+        {/* ── Badge ── */}
+        <div className="ml-auto flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/[0.06] py-1.5 pl-3 pr-3.5">
+          <Zap size={12} className="text-emerald-300" />
+          <span className="font-mono text-[11px] font-semibold text-emerald-300">+12V RAIL — OK</span>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -210,6 +414,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#07111f] font-sans text-white">
+      <PcbCanvas />
       <header
         className={`fixed top-0 z-50 w-full border-b border-white/10 bg-[#07111f]/55 backdrop-blur-md transition-all duration-300 ${
           scrolled ? "py-1 shadow-lg shadow-black/20" : "py-2"
@@ -262,33 +467,6 @@ export default function Home() {
       </header>
 
       <section id="reparații" className="relative min-h-[88vh] overflow-hidden">
-        <style>{`
-          @keyframes pcbDraw { from { stroke-dashoffset: 1600; } to { stroke-dashoffset: 0; } }
-          @keyframes pcbPulse { 0%,100% { opacity: 0.2; } 50% { opacity: 0.75; } }
-          @keyframes viaGlow { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
-          @keyframes pcbFlow { to { stroke-dashoffset: -200; } }
-          @keyframes pcbTwinkle { 0%,100% { opacity: 0.35; transform: scale(1); } 50% { opacity: 1; transform: scale(1.25); } }
-          .pcb-trace { stroke-dasharray: 1600; animation: pcbDraw 3s ease-out forwards; }
-          .pcb-glow { animation: pcbPulse 3s ease-in-out infinite; }
-          .pcb-via { animation: viaGlow 2.6s ease-in-out infinite; }
-          .pcb-flow { stroke-dasharray: 4 18; animation: pcbFlow 2.2s linear infinite; }
-          .pcb-twinkle { transform-box: fill-box; transform-origin: center; animation: pcbTwinkle 2s ease-in-out infinite; }
-        `}</style>
-
-        {/* Ambient green glow */}
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{ background: "radial-gradient(ellipse 60% 50% at 75% 25%, rgba(31,111,91,0.20), transparent 65%)" }}
-        />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-64 bg-gradient-to-b from-transparent to-[#07111f]" />
-
-        {/* ── PCB background — starts at the far right, fades into the page ── */}
-        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[55%] opacity-50 lg:block">
-          <PcbBoard idPrefix="pcbHero" />
-          <div className="absolute inset-0 bg-gradient-to-l from-transparent via-[#07111f]/45 to-[#07111f]" />
-          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-[#07111f]" />
-        </div>
-
         {/* ── Content ── */}
         <motion.div
           initial="hidden"
@@ -356,6 +534,8 @@ export default function Home() {
         </motion.div>
       </section>
 
+      <DiagBanner />
+
       <motion.section
   id="ce-reparam"
   initial="hidden"
@@ -363,14 +543,8 @@ export default function Home() {
   viewport={{ once: true, amount: 0.2 }}
   variants={fadeUp}
   transition={{ duration: 0.6, ease: "easeOut" }}
-  className="relative overflow-hidden bg-[#07111f] px-6 py-24 text-white"
+  className="relative overflow-hidden px-6 py-24 text-white"
 >
-  {/* Traveling PCB — now on the left */}
-  <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-[40%] opacity-50 lg:block">
-    <PcbBoard idPrefix="pcbMid" />
-    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#07111f]/75 to-[#07111f]" />
-  </div>
-
   <div className="relative z-10 mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1.15fr_0.85fr]">
     <div>
       <div className="mb-14">
@@ -465,14 +639,8 @@ export default function Home() {
         viewport={{ once: true, amount: 0.2 }}
         variants={fadeUp}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="relative overflow-hidden bg-[#07111f] px-6 py-24 text-white"
+        className="relative overflow-hidden px-6 py-24 text-white"
       >
-        {/* Traveling PCB — back to the right, ending above the footer */}
-        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[40%] opacity-50 lg:block">
-          <PcbBoard idPrefix="pcbFoot" />
-          <div className="absolute inset-0 bg-gradient-to-l from-transparent via-[#07111f]/75 to-[#07111f]" />
-          <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-b from-transparent to-[#07111f]" />
-        </div>
 
         <div className="relative z-10 mx-auto max-w-7xl">
           <div>
@@ -576,11 +744,11 @@ export default function Home() {
         animate="visible"
         variants={fadeUp}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="border-t border-white/10 bg-[#080808] px-6 py-16 text-white"
+        className="relative z-10 border-t border-white/10 bg-[#050505] px-6 py-10 text-white"
       >
-        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1fr_500px]">
+        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1fr_500px]">
           <div>
-            <div className="relative h-24 w-72">
+            <div className="relative h-16 w-56">
               <Image
              src="/logo.png"
             alt="IMPEDEX"
@@ -590,16 +758,16 @@ export default function Home() {
                   />
             </div>
 
-            <p className="mt-4 max-w-xl text-sm leading-7 text-white/60">
+            <p className="mt-3 max-w-xl text-sm leading-6 text-white/60">
               Service electronic pentru TV-uri, telefoane, laptopuri, surse,
               plăci electronice, echipamente industriale și sisteme
               fotovoltaice.
             </p>
 
-            <div className="mt-8 grid gap-10 md:grid-cols-3">
+            <div className="mt-6 grid gap-8 md:grid-cols-3">
               <div>
                 <h4 className="font-semibold text-white">Informații</h4>
-                <div className="mt-5 space-y-3 text-sm text-white/55">
+                <div className="mt-3 space-y-2 text-sm text-white/55">
                   <a href="#reparații" className="block hover:text-white">
                     Service
                   </a>
@@ -614,7 +782,7 @@ export default function Home() {
 
               <div>
                 <h4 className="font-semibold text-white">Legal</h4>
-                <div className="mt-5 space-y-3 text-sm text-white/55">
+                <div className="mt-3 space-y-2 text-sm text-white/55">
                   <a href="/privacy-policy" className="block hover:text-white">
                     Privacy Policy
                   </a>
@@ -635,7 +803,7 @@ export default function Home() {
 
               <div>
                 <h4 className="font-semibold text-white">Contact</h4>
-                <div className="mt-5 space-y-3 text-sm text-white/60">
+                <div className="mt-3 space-y-2 text-sm text-white/60">
                   <p className="flex items-center gap-2">
                     <Mail size={15} className="text-emerald-300" />
                     contact@impedex.ro
@@ -650,7 +818,7 @@ export default function Home() {
                   href="https://wa.me/407xxxxxxxx"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-6 inline-flex rounded-md bg-[#1f6f5b] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#195c4b]"
+                  className="mt-4 inline-flex rounded-md bg-[#1f6f5b] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#195c4b]"
                 >
                   WhatsApp
                 </a>
@@ -661,7 +829,7 @@ export default function Home() {
           {/* FAQ — coloana dreaptă din footer */}
           <div>
             <h4 className="text-lg font-bold text-white">Întrebări frecvente</h4>
-            <div className="mt-5 space-y-2">
+            <div className="mt-3 space-y-2">
               {[
                 { q: "Cât durează diagnosticarea?", a: "În majoritatea cazurilor răspundem în 1-2 zile lucrătoare." },
                 { q: "Pot trimite prin curier?", a: "Da. Organizăm ridicarea din orice localitate din România." },
@@ -683,7 +851,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="mx-auto mt-14 flex max-w-7xl flex-col gap-4 border-t border-white/10 pt-8 text-sm text-white/40 md:flex-row md:items-center md:justify-between">
+        <div className="mx-auto mt-8 flex max-w-7xl flex-col gap-4 border-t border-white/10 pt-6 text-sm text-white/40 md:flex-row md:items-center md:justify-between">
           <p>
             © {new Date().getFullYear()} IMPEDEX · Reparații Electronice
             Profesionale
