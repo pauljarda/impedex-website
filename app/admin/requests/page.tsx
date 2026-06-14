@@ -154,7 +154,7 @@ export default function RequestsPage() {
           month: "short",
           year: "numeric",
         })
-      : "—";
+      : "-";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-slate-950 to-gray-950 text-gray-100">
@@ -302,7 +302,7 @@ export default function RequestsPage() {
                         </p>
 
                         <div className="mt-5 flex items-center justify-between text-xs text-gray-500">
-                          <span className="truncate max-w-[55%]">{req.email || "—"}</span>
+                          <span className="truncate max-w-[55%]">{req.email || "-"}</span>
                           <span>{formatDate(req.created_at)}</span>
                         </div>
                       </motion.button>
@@ -486,7 +486,7 @@ function DetailItem({
           {label}
         </p>
         <p className="mt-2 font-medium text-gray-200 truncate">
-          {value || "—"}
+          {value || "-"}
         </p>
       </div>
     </div>
