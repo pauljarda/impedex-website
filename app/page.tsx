@@ -1,9 +1,16 @@
-﻿"use client";
+"use client";
 
-import Image from "next/image";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Mail, Phone, User, Plus } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import PcbCanvas from "@/components/PcbCanvas";
+import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
+import {
+  IconSolder, IconClockPulse, IconShieldTrace, IconVan,
+  IconTvWave, IconPhonePulse, IconPcb, IconSolar,
+  IconDoc, IconMultimeter, IconBoxCheck,
+} from "@/components/icons";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 36 },
@@ -18,531 +25,6 @@ const stagger = {
     },
   },
 };
-
-/* ── Custom schematic-style icon set (hand-drawn, electronics themed) ── */
-
-type CustomIconProps = { size?: number; className?: string };
-
-function SchematicIcon({ size = 24, className, children }: CustomIconProps & { children: ReactNode }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-      aria-hidden="true"
-    >
-      {children}
-    </svg>
-  );
-}
-
-function IconSolder(p: CustomIconProps) {
-  return (
-    <SchematicIcon {...p}>
-      <path d="M3.5 20.5 L10 14" />
-      <path d="M9.5 14.5 L13.5 10.5 L15.5 12.5 L11.5 16.5 Z" />
-      <path d="M15 11 C16.8 9.2 16.2 7.6 18 6.5 C19.2 5.8 20 6.5 20.5 7.2" opacity="0.85" />
-      <circle cx="3.9" cy="20.1" r="1" fill="currentColor" stroke="none" />
-      <path d="M7.5 11.5 c-0.5-1 0.5-1.4 0-2.4" opacity="0.45" />
-    </SchematicIcon>
-  );
-}
-
-function IconClockPulse(p: CustomIconProps) {
-  return (
-    <SchematicIcon {...p}>
-      <circle cx="12" cy="12" r="8.5" />
-      <path d="M5.8 12 H8 l1.4-2.6 1.9 5 1.4-2.4 H18.2" opacity="0.9" />
-      <circle cx="12" cy="5" r="0.8" fill="currentColor" stroke="none" opacity="0.7" />
-    </SchematicIcon>
-  );
-}
-
-function IconShieldTrace(p: CustomIconProps) {
-  return (
-    <SchematicIcon {...p}>
-      <path d="M12 3 L19 5.8 V11.3 C19 15.9 16.1 19.1 12 20.8 C7.9 19.1 5 15.9 5 11.3 V5.8 Z" />
-      <path d="M12 7.5 V10.2 M12 10.2 L9.6 12.6 M12 10.2 L14.4 12.6" opacity="0.85" />
-      <circle cx="9.6" cy="12.6" r="0.9" fill="currentColor" stroke="none" />
-      <circle cx="14.4" cy="12.6" r="0.9" fill="currentColor" stroke="none" />
-    </SchematicIcon>
-  );
-}
-
-function IconVan(p: CustomIconProps) {
-  return (
-    <SchematicIcon {...p}>
-      <path d="M2.5 7.5 H14 V16 H2.5 Z" />
-      <path d="M14 10 H17.8 L20.8 13.2 V16 H14" />
-      <path d="M15.2 10 V12.6 H18.4" opacity="0.7" />
-      <circle cx="6.8" cy="17.6" r="1.7" />
-      <circle cx="16.8" cy="17.6" r="1.7" />
-      <path d="M0.8 10.2 H1.9 M0.8 13.2 H1.9" opacity="0.5" />
-    </SchematicIcon>
-  );
-}
-
-function IconTvWave(p: CustomIconProps) {
-  return (
-    <SchematicIcon {...p}>
-      <rect x="3" y="6.5" width="18" height="12" rx="2" />
-      <path d="M9 6.5 L12 3.5 L15 6.5" opacity="0.7" />
-      <path d="M6.8 12.5 q1.3-2.6 2.6 0 t2.6 0 t2.6 0 t2.6 0" opacity="0.9" />
-      <path d="M9.5 18.5 v1.3 M14.5 18.5 v1.3" />
-    </SchematicIcon>
-  );
-}
-
-function IconPhonePulse(p: CustomIconProps) {
-  return (
-    <SchematicIcon {...p}>
-      <rect x="7.5" y="3" width="9" height="18" rx="2.2" />
-      <path d="M10.8 5.2 h2.4" opacity="0.7" />
-      <path d="M9.5 13 l1.2-1.8 1.6 3.2 1.2-1.8" opacity="0.9" />
-      <circle cx="12" cy="18.4" r="0.85" fill="currentColor" stroke="none" opacity="0.8" />
-    </SchematicIcon>
-  );
-}
-
-function IconPcb(p: CustomIconProps) {
-  return (
-    <SchematicIcon {...p}>
-      <rect x="8" y="8" width="8" height="8" rx="1.4" />
-      <circle cx="12" cy="12" r="1.3" opacity="0.9" />
-      <path d="M10.5 8 V5.5 M13.5 8 V5.5 M10.5 16 v2.5 M13.5 16 v2.5 M8 10.5 H5.5 M8 13.5 H5.5 M16 10.5 h2.5 M16 13.5 h2.5" opacity="0.85" />
-      <path d="M16 8 L18.7 5.3" />
-      <circle cx="19.3" cy="4.7" r="1" fill="currentColor" stroke="none" />
-      <path d="M8 16 L5.3 18.7" />
-      <circle cx="4.7" cy="19.3" r="1" fill="currentColor" stroke="none" />
-    </SchematicIcon>
-  );
-}
-
-function IconSolar(p: CustomIconProps) {
-  return (
-    <SchematicIcon {...p}>
-      <path d="M6.5 13.5 L9.5 7 H20 L17 13.5 Z" />
-      <path d="M10.8 9.2 H17.6 M9.7 11.3 H16.6 M13.2 7 L10.2 13.5" opacity="0.6" />
-      <path d="M13 13.5 V17.5 M10 17.5 H16" />
-      <circle cx="4.8" cy="4.8" r="1.9" />
-      <path d="M4.8 1.5 V2.4 M1.5 4.8 H2.4 M7.2 2.4 L6.6 3 M2.4 7.2 L3 6.6" opacity="0.8" />
-    </SchematicIcon>
-  );
-}
-
-function IconDoc(p: CustomIconProps) {
-  return (
-    <SchematicIcon {...p}>
-      <path d="M6 3 H14.5 L18.5 7 V21 H6 Z" />
-      <path d="M14.5 3 V7 H18.5" opacity="0.8" />
-      <path d="M9 12 H15.5 M9 15 H15.5 M9 18 H12.5" opacity="0.7" />
-    </SchematicIcon>
-  );
-}
-
-function IconMultimeter(p: CustomIconProps) {
-  return (
-    <SchematicIcon {...p}>
-      <rect x="7" y="2.8" width="10" height="13.5" rx="2" />
-      <circle cx="12" cy="8" r="2.4" />
-      <path d="M12 8 L13.6 6.4" />
-      <path d="M9.3 13.2 h1.6 M13.1 13.2 h1.6" opacity="0.6" />
-      <path d="M9.5 16.3 C9.5 19.3 6.2 18.6 6.2 21.2 M14.5 16.3 C14.5 19.3 17.8 18.6 17.8 21.2" opacity="0.9" />
-      <circle cx="6.2" cy="21.6" r="0.9" fill="currentColor" stroke="none" />
-      <circle cx="17.8" cy="21.6" r="0.9" fill="currentColor" stroke="none" />
-    </SchematicIcon>
-  );
-}
-
-function IconBoxCheck(p: CustomIconProps) {
-  return (
-    <SchematicIcon {...p}>
-      <path d="M4 8.2 L12 4.2 L20 8.2 V15.8 L12 19.8 L4 15.8 Z" />
-      <path d="M4 8.2 L12 12.2 L20 8.2 M12 12.2 V19.8" opacity="0.7" />
-      <path d="M16.8 4.6 l1.3 1.3 L20.4 3.4" />
-    </SchematicIcon>
-  );
-}
-
-/*
- * Logo with live PCB traces: the greenish circuit lines + Ω pads baked into
- * logo.png are detected per-pixel at runtime, recoloured emerald and animated
- * (soft pulse + a light sweep travelling along the traces) on a canvas overlay
- * aligned with the white base logo underneath.
- */
-function LogoMark({ sizes, priority = false }: { sizes: string; priority?: boolean }) {
-  const boxRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const box = boxRef.current;
-    const canvas = canvasRef.current;
-    if (!box || !canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let raf = 0;
-    let traceCanvas: HTMLCanvasElement | null = null;
-    let imgW = 0;
-    let imgH = 0;
-
-    const img = new window.Image();
-    img.src = "/logo.png";
-    img.onload = () => {
-      imgW = img.naturalWidth;
-      imgH = img.naturalHeight;
-
-      /* extract the greenish trace pixels and recolour them emerald */
-      const off = document.createElement("canvas");
-      off.width = imgW;
-      off.height = imgH;
-      const octx = off.getContext("2d");
-      if (!octx) return;
-      octx.drawImage(img, 0, 0);
-      const data = octx.getImageData(0, 0, imgW, imgH);
-      const px = data.data;
-      for (let i = 0; i < px.length; i += 4) {
-        const r = px[i], g = px[i + 1], b = px[i + 2], a = px[i + 3];
-        const isTrace = a > 30 && g > r + 14 && g >= b + 4;
-        if (isTrace) {
-          px[i] = 52; px[i + 1] = 211; px[i + 2] = 153;
-        } else {
-          px[i + 3] = 0;
-        }
-      }
-      octx.putImageData(data, 0, 0);
-      traceCanvas = off;
-    };
-
-    const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = box.clientWidth * dpr;
-      canvas.height = box.clientHeight * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
-    resize();
-    const ro = new ResizeObserver(resize);
-    ro.observe(box);
-
-    const draw = () => {
-      raf = requestAnimationFrame(draw);
-      const cw = box.clientWidth;
-      const ch = box.clientHeight;
-      ctx.clearRect(0, 0, cw, ch);
-      if (!traceCanvas || !imgW) return;
-
-      /* replicate object-contain object-left positioning of the base image */
-      const scale = Math.min(cw / imgW, ch / imgH);
-      const dw = imgW * scale;
-      const dh = imgH * scale;
-      const dx = 0;
-      const dy = (ch - dh) / 2;
-
-      const t = performance.now() / 1000;
-
-      /* breathing emerald glow */
-      ctx.save();
-      ctx.globalAlpha = 0.78 + 0.22 * Math.sin(t * 2.2);
-      ctx.shadowColor = "rgba(52,211,153,0.85)";
-      ctx.shadowBlur = 5;
-      ctx.drawImage(traceCanvas, dx, dy, dw, dh);
-      ctx.restore();
-
-      /* light sweep travelling along the traces */
-      ctx.save();
-      ctx.globalCompositeOperation = "source-atop";
-      const bandW = dw * 0.28;
-      const sx = dx - bandW + ((t * dw * 0.45) % (dw + bandW * 2));
-      const grad = ctx.createLinearGradient(sx, 0, sx + bandW, 0);
-      grad.addColorStop(0, "rgba(214,255,239,0)");
-      grad.addColorStop(0.5, "rgba(214,255,239,0.9)");
-      grad.addColorStop(1, "rgba(214,255,239,0)");
-      ctx.fillStyle = grad;
-      ctx.fillRect(dx, dy, dw, dh);
-      ctx.restore();
-    };
-    draw();
-
-    return () => {
-      cancelAnimationFrame(raf);
-      ro.disconnect();
-    };
-  }, []);
-
-  return (
-    <div ref={boxRef} className="absolute inset-0">
-      <Image
-        src="/logo.png"
-        alt="IMPEDEX"
-        fill
-        sizes={sizes}
-        className="object-contain object-left brightness-0 invert"
-        priority={priority}
-      />
-      <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true" />
-    </div>
-  );
-}
-
-function PcbCanvas() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let raf: number;
-    const LABELS = ["3.3V", "CLK", "12V", "PWM", "GND", "SPI", "5V", "I2C", "VCC", "UART", "100R", "MOSFET", "RESET", "TX", "RX", "EN"];
-
-    type Node = {
-      col: number; row: number; x: number; y: number;
-      pulse: number; pulseSpeed: number;
-      labelIdx: number; showLabel: boolean; labelTimer: number; labelDur: number;
-      isChip: boolean;
-    };
-    type Edge = { a: Node; b: Node };
-    type Signal = { edge: Edge; t: number; speed: number; alpha: number; reverse: boolean };
-
-    let W = 0, H = 0;
-    let nodes: Node[] = [];
-    let edges: Edge[] = [];
-    let signals: Signal[] = [];
-
-    const spawnSignal = () => {
-      if (edges.length === 0) return;
-      const edge = edges[Math.floor(Math.random() * edges.length)];
-      signals.push({
-        edge,
-        t: 0,
-        speed: 0.002 + Math.random() * 0.005,
-        alpha: 0.7 + Math.random() * 0.3,
-        reverse: Math.random() > 0.5,
-      });
-    };
-
-    const buildScene = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      W = canvas.offsetWidth;
-      H = canvas.offsetHeight;
-      canvas.width = W * dpr;
-      canvas.height = H * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-      /* iso projection — diamond grid centered, covers whole viewport */
-      const tileW = 96;
-      const tileH = 44;
-      const ox = W * 0.5;
-      const oy = -H * 0.25;
-      const iso = (col: number, row: number) => ({
-        x: ox + (col - row) * (tileW / 2),
-        y: oy + (col + row) * (tileH / 2),
-      });
-
-      nodes = [];
-      edges = [];
-      signals = [];
-
-      /* generous range + offscreen culling so the grid always fills the screen */
-      const RANGE = Math.ceil((W + H * 2) / tileH) + 8;
-      for (let c = -RANGE; c < RANGE; c += 2) {
-        for (let r = -RANGE; r < RANGE; r += 2) {
-          const { x, y } = iso(c, r);
-          if (x < -60 || x > W + 60 || y < -60 || y > H + 60) continue;
-          nodes.push({
-            col: c, row: r, x, y,
-            pulse: Math.random() * Math.PI * 2,
-            pulseSpeed: 0.008 + Math.random() * 0.014,
-            labelIdx: Math.floor(Math.random() * LABELS.length),
-            showLabel: Math.random() > 0.78,
-            labelTimer: Math.floor(Math.random() * 200),
-            labelDur: 140 + Math.random() * 200,
-            isChip: Math.random() > 0.92,
-          });
-        }
-      }
-
-      const nodeMap = new Map<string, Node>();
-      nodes.forEach(n => nodeMap.set(`${n.col},${n.row}`, n));
-      nodes.forEach(n => {
-        const right = nodeMap.get(`${n.col + 2},${n.row}`);
-        const down = nodeMap.get(`${n.col},${n.row + 2}`);
-        if (right) edges.push({ a: n, b: right });
-        if (down) edges.push({ a: n, b: down });
-      });
-
-      for (let i = 0; i < 36; i++) spawnSignal();
-    };
-
-    const draw = () => {
-      ctx.clearRect(0, 0, W, H);
-
-      /* Base grid lines */
-      ctx.lineWidth = 0.7;
-      ctx.strokeStyle = "rgba(31,111,91,0.22)";
-      ctx.beginPath();
-      edges.forEach(({ a, b }) => {
-        ctx.moveTo(a.x, a.y);
-        ctx.lineTo(b.x, b.y);
-      });
-      ctx.stroke();
-
-      /* Brighter accent traces */
-      ctx.lineWidth = 1.3;
-      edges.forEach(({ a, b }, i) => {
-        if (i % 5 !== 0) return;
-        const grad = ctx.createLinearGradient(a.x, a.y, b.x, b.y);
-        grad.addColorStop(0, "rgba(52,211,153,0)");
-        grad.addColorStop(0.5, "rgba(52,211,153,0.28)");
-        grad.addColorStop(1, "rgba(52,211,153,0)");
-        ctx.strokeStyle = grad;
-        ctx.beginPath();
-        ctx.moveTo(a.x, a.y);
-        ctx.lineTo(b.x, b.y);
-        ctx.stroke();
-      });
-
-      /* Nodes */
-      nodes.forEach(n => {
-        n.pulse += n.pulseSpeed;
-        const glow = 0.45 + 0.55 * Math.sin(n.pulse);
-
-        if (n.isChip) {
-          /* small iso chip */
-          ctx.strokeStyle = `rgba(52,211,153,${0.3 + 0.25 * glow})`;
-          ctx.fillStyle = "rgba(10,31,24,0.85)";
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(n.x, n.y - 9);
-          ctx.lineTo(n.x + 16, n.y);
-          ctx.lineTo(n.x, n.y + 9);
-          ctx.lineTo(n.x - 16, n.y);
-          ctx.closePath();
-          ctx.fill();
-          ctx.stroke();
-        } else {
-          ctx.beginPath();
-          ctx.arc(n.x, n.y, 4.5, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgba(52,211,153,${0.22 * glow})`;
-          ctx.lineWidth = 1;
-          ctx.stroke();
-
-          ctx.beginPath();
-          ctx.arc(n.x, n.y, 2, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(167,243,208,${0.45 + 0.45 * glow})`;
-          ctx.fill();
-        }
-
-        /* Radar ping */
-        const ping = Math.sin(n.pulse * 0.35);
-        if (ping > 0.96) {
-          const r = ((ping - 0.96) / 0.04) * 30;
-          ctx.beginPath();
-          ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgba(110,231,183,${0.45 * (1 - r / 30)})`;
-          ctx.lineWidth = 1;
-          ctx.stroke();
-        }
-
-        /* Floating label */
-        if (n.showLabel) {
-          n.labelTimer++;
-          const cycle = n.labelTimer % n.labelDur;
-          const fadeIn = Math.min(cycle / 25, 1);
-          const fadeOut = Math.min((n.labelDur - cycle) / 25, 1);
-          const alpha = Math.min(fadeIn, fadeOut) * 0.65;
-          const drift = (cycle / n.labelDur) * 16;
-          ctx.font = "600 10px ui-monospace, monospace";
-          ctx.fillStyle = `rgba(110,231,183,${alpha})`;
-          ctx.fillText(LABELS[n.labelIdx], n.x + 8, n.y - 6 - drift);
-          if (cycle === 0) n.labelIdx = Math.floor(Math.random() * LABELS.length);
-        }
-      });
-
-      /* Travelling signals with comet tail */
-      for (let i = signals.length - 1; i >= 0; i--) {
-        const s = signals[i];
-        s.t += s.speed;
-        if (s.t >= 1) {
-          signals.splice(i, 1);
-          spawnSignal();
-          continue;
-        }
-        const t = s.reverse ? 1 - s.t : s.t;
-        const { a, b } = s.edge;
-        const x = a.x + (b.x - a.x) * t;
-        const y = a.y + (b.y - a.y) * t;
-
-        /* tail */
-        const tailT = Math.max(0, Math.min(1, t + (s.reverse ? 0.1 : -0.1)));
-        const tx = a.x + (b.x - a.x) * tailT;
-        const ty = a.y + (b.y - a.y) * tailT;
-        const tail = ctx.createLinearGradient(tx, ty, x, y);
-        tail.addColorStop(0, "rgba(52,211,153,0)");
-        tail.addColorStop(1, `rgba(52,211,153,${s.alpha * 0.5})`);
-        ctx.strokeStyle = tail;
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(tx, ty);
-        ctx.lineTo(x, y);
-        ctx.stroke();
-
-        /* head */
-        const grad = ctx.createRadialGradient(x, y, 0, x, y, 8);
-        grad.addColorStop(0, `rgba(212,252,234,${s.alpha})`);
-        grad.addColorStop(0.4, `rgba(52,211,153,${s.alpha * 0.55})`);
-        grad.addColorStop(1, "rgba(52,211,153,0)");
-        ctx.beginPath();
-        ctx.arc(x, y, 8, 0, Math.PI * 2);
-        ctx.fillStyle = grad;
-        ctx.fill();
-      }
-
-      raf = requestAnimationFrame(draw);
-    };
-
-    buildScene();
-    draw();
-
-    let resizeTimer: ReturnType<typeof setTimeout>;
-    const onResize = () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(buildScene, 150);
-    };
-    window.addEventListener("resize", onResize);
-
-    return () => {
-      cancelAnimationFrame(raf);
-      clearTimeout(resizeTimer);
-      window.removeEventListener("resize", onResize);
-    };
-  }, []);
-
-  return (
-    <>
-      <canvas
-        ref={canvasRef}
-        className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-60"
-        aria-hidden="true"
-      />
-      {/* subtle dark vignette so text stays readable over the animation */}
-      <div
-        className="pointer-events-none fixed inset-0 z-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 70% 60% at 30% 45%, rgba(7,17,31,0.82) 0%, rgba(7,17,31,0.35) 55%, transparent 100%)",
-        }}
-      />
-    </>
-  );
-}
 
 function ScopeKnob({ cx, cy, r, deg }: { cx: number; cy: number; r: number; deg: number }) {
   const rad = ((deg - 90) * Math.PI) / 180;
@@ -598,7 +80,7 @@ function HeroStats() {
       icon: IconSolder,
       value: "30+ ani",
       label: "Experiență în electronice",
-      detail: "De la TV-uri CRT la invertoare moderne — reparăm defecte din toate generațiile de echipamente.",
+      detail: "De la TV-uri CRT la invertoare moderne - reparăm defecte din toate generațiile de echipamente.",
     },
     {
       icon: IconClockPulse,
@@ -665,7 +147,7 @@ function ScopePanel() {
     const animate = () => {
       t += 0.035;
 
-      /* CH1 — sine with breathing amplitude and drifting wavelength */
+      /* CH1 - sine with breathing amplitude and drifting wavelength */
       const amp = 52 + 16 * Math.sin(t * 0.5);
       const wavelength = 96 + 22 * Math.sin(t * 0.21);
       const k = (Math.PI * 2) / wavelength;
@@ -677,7 +159,7 @@ function ScopePanel() {
       }
       ch1Ref.current?.setAttribute("d", d1);
 
-      /* CH2 — 5V PWM square wave, duty cycle slowly drifting */
+      /* CH2 - 5V PWM square wave, duty cycle slowly drifting */
       const duty = 0.5 + 0.16 * Math.sin(t * 0.33);
       const period = 110;
       const hi = 216, lo = 253;
@@ -799,12 +281,12 @@ function ScopePanel() {
               <line key={`ty${i}`} x1="247.5" y1={10 * i} x2="252.5" y2={10 * i} />
             ))}
           </g>
-          {/* trigger level — 1.24 V on CH1 at 2 V/div */}
+          {/* trigger level - 1.24 V on CH1 at 2 V/div */}
           <line x1="0" y1="127" x2="500" y2="127" stroke="#fbbf24" strokeWidth="1" strokeDasharray="6 5" opacity="0.4" />
           <path d="M500,127 l-10,-6 v12 z" fill="#fbbf24" opacity="0.7" />
-          {/* CH2 — PWM (amber) */}
+          {/* CH2 - PWM (amber) */}
           <path ref={ch2Ref} d="M0,253 L500,253" fill="none" stroke="#fbbf24" strokeWidth="1.5" opacity="0.8" />
-          {/* CH1 — sine (emerald phosphor) */}
+          {/* CH1 - sine (emerald phosphor) */}
           <path
             ref={ch1Ref}
             d="M0,150 L500,150"
@@ -891,68 +373,10 @@ function ScopePanel() {
 }
 
 export default function Home() {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
     <main className="min-h-screen bg-[#07111f] font-sans text-white">
       <PcbCanvas />
-      <header
-        className={`fixed top-0 z-50 w-full border-b border-white/10 bg-[#07111f]/55 backdrop-blur-md transition-all duration-300 ${
-          scrolled ? "py-1 shadow-lg shadow-black/20" : "py-2"
-        }`}
-      >
-        <div className="relative flex w-full items-center justify-between px-6 md:px-12">
-          <div className="flex flex-1 justify-start">
-            <a href="/" className="flex items-center">
-              <div
-                className={`relative transition-all duration-300 ${
-                  scrolled ? "h-14 w-40" : "h-18 w-52 md:h-20 md:w-60"
-                }`}
-              >
-                <Image
-                  src="/logo.png"
-                  alt="IMPEDEX"
-                  fill
-                  sizes="(max-width: 768px) 160px, 240px"
-                  className="object-contain object-left brightness-0 invert"
-                  priority
-                />
-              </div>
-            </a>
-          </div>
-
-          <nav className="absolute left-1/2 hidden -translate-x-1/2 gap-16 text-base font-bold uppercase tracking-wider text-white/80 lg:flex xl:gap-24">
-            <a href="#reparații" className="transition-colors hover:text-emerald-300">
-              Service
-            </a>
-            <a href="#ce-reparam" className="transition-colors hover:text-emerald-300">
-              Reparații
-            </a>
-            <a href="#contact" className="transition-colors hover:text-emerald-300">
-              Contact
-            </a>
-          </nav>
-
-          <div className="flex flex-1 justify-end">
-            <a
-              href="/login"
-              className={`flex items-center gap-2 rounded-md border border-white/20 bg-white px-5 py-2 text-sm font-semibold text-[#07111f] transition hover:bg-slate-100 ${
-                scrolled ? "px-4 py-2" : "px-5 py-2"
-              }`}
-            >
-              <User size={16} />
-              <span>Cont client</span>
-            </a>
-          </div>
-        </div>
-      </header>
+      <SiteHeader />
 
       <section id="reparații" className="relative min-h-[88vh] overflow-hidden">
         {/* ── Content ── */}
@@ -1005,7 +429,7 @@ export default function Home() {
   transition={{ duration: 0.6, ease: "easeOut" }}
   className="relative overflow-hidden px-6 py-24 text-white"
 >
-  <div className="relative z-10 mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1.15fr_0.85fr]">
+  <div className="relative z-10 mx-auto grid max-w-7xl items-stretch gap-12 lg:grid-cols-[1fr_0.95fr]">
     <div>
       <div className="mb-14">
         <p className="mb-3 text-sm font-semibold text-emerald-300">
@@ -1067,20 +491,22 @@ export default function Home() {
     <motion.div
       variants={fadeUp}
       transition={{ duration: 0.7, ease: "easeOut" }}
-      className="flex flex-col justify-center overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] p-5 shadow-2xl shadow-black/40 ring-1 ring-emerald-400/5"
+      className="flex flex-col justify-center gap-6"
     >
-      <ScopePanel />
+      <div style={{ filter: "drop-shadow(0 22px 42px rgba(0,0,0,0.55))" }}>
+        <ScopePanel />
+      </div>
 
-      <div className="px-3 pb-3 pt-6">
+      <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 ring-1 ring-emerald-400/5">
         <p className="text-sm font-semibold text-emerald-300">
-          Diagnostic la nivel de componentă
+          Garanție inclusă
         </p>
         <h3 className="mt-2 text-2xl font-bold text-white">
-          TV-uri, surse, plăci electronice și invertoare
+          6 luni garanție la toate reparațiile
         </h3>
         <p className="mt-3 text-sm leading-6 text-white/65">
-          Intervenții pentru electronice casnice, echipamente industriale și
-          sisteme fotovoltaice.
+          Fiecare echipament reparat este testat înainte de retur și
+          beneficiază de 6 luni garanție la lucrarea efectuată.
         </p>
       </div>
     </motion.div>
@@ -1169,14 +595,14 @@ export default function Home() {
               {/* Poză cu CTA suprapus */}
               <div className="relative mt-8 overflow-hidden rounded-2xl border border-white/10">
                 <img
-                  src="/repair.png"
+                  src="/repair-section.png"
                   alt="Service electronic IMPEDEX"
-                  className="h-72 w-full object-cover"
+                  className="h-80 w-full object-cover object-[50%_62%]"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#07111f] via-[#07111f]/40 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 flex flex-col gap-4 p-6 sm:flex-row sm:items-end sm:justify-between">
                   <div>
-                    <p className="text-base font-semibold text-white">Ai nevoie de ajutor?</p>
+                    <p className="text-base font-semibold text-emerald-300">Ai nevoie de ajutor?</p>
                     <p className="mt-1 text-sm text-white/70">Scrie-ne și revenim cu un diagnostic rapid.</p>
                   </div>
                   <a
@@ -1192,127 +618,7 @@ export default function Home() {
         </div>
       </motion.section>
 
-      <motion.footer
-        id="contact"
-        initial="hidden"
-        animate="visible"
-        variants={fadeUp}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="relative z-10 border-t border-white/10 bg-[#050505] px-6 py-10 text-white"
-      >
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1fr_500px]">
-          <div>
-            <div className="relative h-16 w-56">
-              <Image
-             src="/logo.png"
-            alt="IMPEDEX"
-             fill
-              sizes="(max-width: 768px) 200px, 288px"
-              className="object-contain object-left brightness-0 invert"
-                  />
-            </div>
-
-            <p className="mt-3 max-w-xl text-sm leading-6 text-white/60">
-              Service electronic pentru TV-uri, telefoane, laptopuri, surse,
-              plăci electronice, echipamente industriale și sisteme
-              fotovoltaice.
-            </p>
-
-            <div className="mt-6 grid gap-8 md:grid-cols-3">
-              <div>
-                <h4 className="font-semibold text-white">Informații</h4>
-                <div className="mt-3 space-y-2 text-sm text-white/55">
-                  <a href="#reparații" className="block hover:text-white">
-                    Service
-                  </a>
-                  <a href="#ce-reparam" className="block hover:text-white">
-                    Ce reparăm
-                  </a>
-                  <a href="/diagnosticare" className="block hover:text-white">
-                    Solicită diagnosticare
-                  </a>
-                </div>
-              </div>
-
-              <div>
-                <h4 className="font-semibold text-white">Legal</h4>
-                <div className="mt-3 space-y-2 text-sm text-white/55">
-                  <a href="/privacy-policy" className="block hover:text-white">
-                    Privacy Policy
-                  </a>
-                  <a href="/cookies" className="block hover:text-white">
-                    Politica Cookies
-                  </a>
-                  <a href="/gdpr" className="block hover:text-white">
-                    GDPR
-                  </a>
-                  <a
-                    href="/termeni-si-conditii"
-                    className="block hover:text-white"
-                  >
-                    Termeni și condiții
-                  </a>
-                </div>
-              </div>
-
-              <div>
-                <h4 className="font-semibold text-white">Contact</h4>
-                <div className="mt-3 space-y-2 text-sm text-white/60">
-                  <p className="flex items-center gap-2">
-                    <Mail size={15} className="text-emerald-300" />
-                    contact@impedex.ro
-                  </p>
-                  <p className="flex items-center gap-2">
-                    <Phone size={15} className="text-emerald-300" />
-                    +40 7xx xxx xxx
-                  </p>
-                </div>
-
-                <a
-                  href="https://wa.me/407xxxxxxxx"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-4 inline-flex rounded-md bg-[#1f6f5b] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#195c4b]"
-                >
-                  WhatsApp
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {/* FAQ — coloana dreaptă din footer */}
-          <div>
-            <h4 className="text-lg font-bold text-white">Întrebări frecvente</h4>
-            <div className="mt-3 space-y-2">
-              {[
-                { q: "Cât durează diagnosticarea?", a: "În majoritatea cazurilor răspundem în 1-2 zile lucrătoare." },
-                { q: "Pot trimite prin curier?", a: "Da. Organizăm ridicarea din orice localitate din România." },
-                { q: "Cine plătește transportul?", a: "Costul este comunicat înainte de confirmarea reparației." },
-                { q: "Oferiți garanție la reparații?", a: "Da, lucrările sunt testate și au garanție comunicată la confirmare." },
-              ].map((item) => (
-                <details
-                  key={item.q}
-                  className="group rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 transition hover:border-emerald-400/25"
-                >
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-medium text-white">
-                    {item.q}
-                    <Plus size={15} className="shrink-0 text-emerald-300 transition-transform duration-200 group-open:rotate-45" />
-                  </summary>
-                  <p className="mt-2 text-sm leading-6 text-white/55">{item.a}</p>
-                </details>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="mx-auto mt-8 flex max-w-7xl flex-col gap-4 border-t border-white/10 pt-6 text-sm text-white/40 md:flex-row md:items-center md:justify-between">
-          <p>
-            © {new Date().getFullYear()} IMPEDEX · Reparații Electronice
-            Profesionale
-          </p>
-          <p>Română (România)</p>
-        </div>
-      </motion.footer>
+      <SiteFooter />
     </main>
   );
 }
