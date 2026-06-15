@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, AlertCircle, Loader2, UserCheck } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 import PcbCanvas from "@/components/PcbCanvas";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
@@ -38,6 +39,37 @@ export default function DiagnosticarePage() {
   });
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [loggedInName, setLoggedInName] = useState<string | null>(null);
+
+  // If the visitor is logged in, prefill name/email so they don't retype them.
+  // The submitted request is linked to their account server-side.
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user || !active) return;
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", user.id)
+        .single();
+
+      if (!active) return;
+      const name = profile?.full_name ?? "";
+      setLoggedInName(name || user.email || null);
+      setForm((f) => ({
+        ...f,
+        full_name: f.full_name || name,
+        email: f.email || user.email || "",
+      }));
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const update = (field: keyof typeof form, value: string) =>
     setForm((f) => ({ ...f, [field]: value }));
@@ -116,6 +148,14 @@ export default function DiagnosticarePage() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
+                {loggedInName && (
+                  <div className="flex items-center gap-2.5 rounded-xl border border-[#16785F]/25 bg-[#16785F]/10 px-4 py-3 text-sm text-[#FFFFFF]/80">
+                    <UserCheck size={16} className="shrink-0 text-[#16785F]" />
+                    <span>
+                      Trimiți ca <span className="font-semibold text-white">{loggedInName}</span> — cererea apare în contul tău.
+                    </span>
+                  </div>
+                )}
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div>
                     <label className="mb-1.5 block text-sm font-medium text-[#FFFFFF]/80">Nume complet</label>

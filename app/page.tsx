@@ -40,7 +40,7 @@ function ScopeKnob({ cx, cy, r, deg }: { cx: number; cy: number; r: number; deg:
         <circle key={i} cx={tk.x} cy={tk.y} r="0.9" fill="#565D5A" />
       ))}
       <circle cx={cx} cy={cy} r={r} fill="url(#scopeKnobGrad)" stroke="#14171A" strokeWidth="1.5" />
-      <circle cx={cx} cy={cy} r={r} fill="none" stroke="#3A403E" strokeWidth="1" strokeDasharray="2 3" opacity="0.8" />
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke="#1e3a5f" strokeWidth="1" strokeDasharray="2 3" opacity="0.8" />
       <circle cx={cx} cy={cy} r={r * 0.45} fill="#07111f" stroke="#2E3332" strokeWidth="0.8" />
       <line x1={cx} y1={cy} x2={x2} y2={y2} stroke="#D2D6CF" strokeWidth="2" strokeLinecap="round" />
     </g>
@@ -202,12 +202,12 @@ function ScopePanel() {
       <svg viewBox="0 0 760 470" className="block h-auto w-full">
         <defs>
           <linearGradient id="scopeBodyGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#2E3332" />
+            <stop offset="0%" stopColor="#1e2d3d" />
             <stop offset="12%" stopColor="#07111f" />
-            <stop offset="100%" stopColor="#14171A" />
+            <stop offset="100%" stopColor="#0d1a2a" />
           </linearGradient>
           <radialGradient id="scopeKnobGrad" cx="0.35" cy="0.3" r="1">
-            <stop offset="0%" stopColor="#3A403E" />
+            <stop offset="0%" stopColor="#1e2d3d" />
             <stop offset="100%" stopColor="#07111f" />
           </radialGradient>
           <linearGradient id="scopeGlare" x1="0" y1="0" x2="0.6" y2="1">
@@ -217,16 +217,19 @@ function ScopePanel() {
           <pattern id="scopeScan" width="1" height="3" patternUnits="userSpaceOnUse">
             <rect width="1" height="1" fill="rgba(0,0,0,0.16)" />
           </pattern>
+          <filter id="logoWhite" colorInterpolationFilters="sRGB">
+            <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0" />
+          </filter>
         </defs>
 
         {/* ── Chassis ── */}
-        <rect x="2" y="2" width="756" height="466" rx="16" fill="url(#scopeBodyGrad)" stroke="#3A403E" strokeWidth="1.5" />
+        <rect x="2" y="2" width="756" height="466" rx="16" fill="url(#scopeBodyGrad)" stroke="#1e3a5f" strokeWidth="1.5" />
         <rect x="4" y="4" width="752" height="10" rx="8" fill="#ffffff" opacity="0.04" />
 
         {/* corner screws */}
         {[[16, 16], [744, 16], [16, 454], [744, 454]].map(([sx, sy], i) => (
           <g key={i}>
-            <circle cx={sx} cy={sy} r="3.5" fill="#14171A" stroke="#3A403E" strokeWidth="1" />
+            <circle cx={sx} cy={sy} r="3.5" fill="#14171A" stroke="#1e3a5f" strokeWidth="1" />
             <line x1={sx - 2} y1={sy} x2={sx + 2} y2={sy} stroke="#4A514E" strokeWidth="0.8" transform={`rotate(${i * 40} ${sx} ${sy})`} />
           </g>
         ))}
@@ -245,7 +248,7 @@ function ScopePanel() {
         </text>
 
         {/* power */}
-        <circle cx="700" cy="29" r="2.5" fill="#16785F" style={{ animation: "scopeBlink 2.4s ease-in-out infinite" }} />
+        <circle cx="700" cy="29" r="2.5" fill="#3DB395" style={{ animation: "scopeBlink 2.4s ease-in-out infinite" }} />
         <circle cx="722" cy="29" r="9" fill="#07111f" stroke="#565D5A" strokeWidth="1.5" />
         <line x1="722" y1="23.5" x2="722" y2="28" stroke="#9AA09A" strokeWidth="1.6" strokeLinecap="round" />
         <path d="M717.5,25.5 a6,6 0 1 0 9,0" fill="none" stroke="#9AA09A" strokeWidth="1.6" strokeLinecap="round" />
@@ -264,7 +267,7 @@ function ScopePanel() {
         {/* waveform area */}
         <svg x="36" y="92" width="442" height="206" viewBox="0 0 500 300" preserveAspectRatio="none">
           {/* graticule 10×8 */}
-          <g stroke="#1f6f5b" strokeWidth="0.6">
+          <g stroke="#1a3a6b" strokeWidth="0.6">
             {Array.from({ length: 9 }, (_, i) => (
               <line key={`v${i}`} x1={50 * (i + 1)} y1="0" x2={50 * (i + 1)} y2="300" opacity={i === 4 ? 0.4 : 0.16} />
             ))}
@@ -273,7 +276,7 @@ function ScopePanel() {
             ))}
           </g>
           {/* centre-axis fine ticks */}
-          <g stroke="#16785F" strokeWidth="1" opacity="0.28">
+          <g stroke="#2563eb" strokeWidth="1" opacity="0.28">
             {Array.from({ length: 50 }, (_, i) => (
               <line key={`tx${i}`} x1={10 * i} y1="147.5" x2={10 * i} y2="152.5" />
             ))}
@@ -286,12 +289,12 @@ function ScopePanel() {
           <path d="M500,127 l-10,-6 v12 z" fill="#fbbf24" opacity="0.7" />
           {/* CH2 - PWM (amber) */}
           <path ref={ch2Ref} d="M0,253 L500,253" fill="none" stroke="#fbbf24" strokeWidth="1.5" opacity="0.8" />
-          {/* CH1 - sine (emerald phosphor) */}
+          {/* CH1 - sine (teal phosphor) */}
           <path
             ref={ch1Ref}
             d="M0,150 L500,150"
             fill="none"
-            stroke="#16785F"
+            stroke="#3DB395"
             strokeWidth="2"
             strokeLinejoin="round"
             style={{ filter: "drop-shadow(0 0 5px rgba(61,179,149,0.7))" }}
@@ -300,15 +303,15 @@ function ScopePanel() {
 
         {/* measurements strip */}
         <line x1="36" y1="304" x2="478" y2="304" stroke="#1f6f5b" strokeWidth="0.6" opacity="0.35" />
-        <text x="40" y="320" fontFamily="monospace" fontSize="10" fill="#16785F">Vpp={meas.vpp}V</text>
-        <text x="112" y="320" fontFamily="monospace" fontSize="10" fill="#16785F">Vrms={meas.vrms}V</text>
-        <text x="196" y="320" fontFamily="monospace" fontSize="10" fill="#16785F">Freq={meas.freq}kHz</text>
-        <text x="290" y="320" fontFamily="monospace" fontSize="10" fill="#16785F">Per={meas.per}µs</text>
+        <text x="40" y="320" fontFamily="monospace" fontSize="10" fill="#3DB395">Vpp={meas.vpp}V</text>
+        <text x="112" y="320" fontFamily="monospace" fontSize="10" fill="#3DB395">Vrms={meas.vrms}V</text>
+        <text x="196" y="320" fontFamily="monospace" fontSize="10" fill="#3DB395">Freq={meas.freq}kHz</text>
+        <text x="290" y="320" fontFamily="monospace" fontSize="10" fill="#3DB395">Per={meas.per}µs</text>
         <text x="368" y="320" fontFamily="monospace" fontSize="10" fill="#fbbf24">Duty={meas.duty}%</text>
 
         {/* channel chips + trigger info */}
-        <rect x="40" y="332" width="78" height="17" rx="3" fill="#06302b" stroke="#16785F" strokeOpacity="0.5" strokeWidth="0.8" />
-        <text x="79" y="344" textAnchor="middle" fontFamily="monospace" fontSize="9" fill="#16785F">1 ~ 2.00V/</text>
+        <rect x="40" y="332" width="78" height="17" rx="3" fill="#06302b" stroke="#3DB395" strokeOpacity="0.5" strokeWidth="0.8" />
+        <text x="79" y="344" textAnchor="middle" fontFamily="monospace" fontSize="9" fill="#3DB395">1 ~ 2.00V/</text>
         <rect x="126" y="332" width="78" height="17" rx="3" fill="#2e2206" stroke="#fbbf24" strokeOpacity="0.5" strokeWidth="0.8" />
         <text x="165" y="344" textAnchor="middle" fontFamily="monospace" fontSize="9" fill="#fbbf24">2 ~ 5.00V/</text>
         <text x="478" y="344" textAnchor="end" fontFamily="monospace" fontSize="9" fill="#9AA09A">Trig 1 ↗ 1.24V</text>
@@ -318,12 +321,12 @@ function ScopePanel() {
         <rect x="32" y="62" width="450" height="314" rx="6" fill="url(#scopeGlare)" />
 
         {/* ── Controls column ── */}
-        <ScopeBtn x={506} y={56} w={54} label="AUTO" led="#16785F" />
-        <ScopeBtn x={566} y={56} w={72} label="RUN/STOP" led="#16785F" />
+        <ScopeBtn x={506} y={56} w={54} label="AUTO" led="#38bdf8" />
+        <ScopeBtn x={566} y={56} w={72} label="RUN/STOP" led="#38bdf8" />
         <ScopeBtn x={644} y={56} w={56} label="SINGLE" />
 
         <text x="506" y="112" fontFamily="monospace" fontSize="8" letterSpacing="3" fill="#6A716B">VERTICAL</text>
-        <ScopeBtn x={506} y={124} w={50} label="CH1" led="#16785F" />
+        <ScopeBtn x={506} y={124} w={50} label="CH1" led="#38bdf8" />
         <ScopeBtn x={506} y={148} w={50} label="CH2" led="#fbbf24" />
         <ScopeKnob cx={600} cy={142} r={14} deg={25} />
         <text x="600" y="170" textAnchor="middle" fontFamily="monospace" fontSize="7" fill="#6A716B">POSITION</text>
@@ -348,7 +351,7 @@ function ScopePanel() {
         <text x="630" y="404" fontFamily="monospace" fontSize="7.5" fill="#fbbf24" opacity="0.8">EDGE ↗ CH1</text>
 
         {/* ── BNC inputs ── */}
-        <ScopeBnc cx={70} cy={418} color="#16785F" label="CH1" />
+        <ScopeBnc cx={70} cy={418} color="#38bdf8" label="CH1" />
         <ScopeBnc cx={134} cy={418} color="#fbbf24" label="CH2" />
         <ScopeBnc cx={198} cy={418} color="#9AA09A" label="EXT" />
 
@@ -429,88 +432,83 @@ export default function Home() {
   transition={{ duration: 0.6, ease: "easeOut" }}
   className="relative overflow-hidden px-6 py-24 text-[#FFFFFF]"
 >
-  <div className="relative z-10 mx-auto grid max-w-7xl items-stretch gap-12 lg:grid-cols-[1fr_0.95fr]">
-    <div>
-      <div className="mb-14">
-        <p className="mb-3 text-sm font-semibold text-[#16785F]">
-          Ce reparăm
-        </p>
-
-        <h2 className="text-4xl font-bold">
-          Reparații pentru electronice casnice și industriale
-        </h2>
-
-        <p className="mt-4 max-w-2xl text-[#FFFFFF]/60">
-          De la electronice de uz casnic până la echipamente industriale,
-          surse, plăci electronice și sisteme fotovoltaice.
-        </p>
-      </div>
-
-      <motion.div variants={stagger} className="grid gap-6 md:grid-cols-2">
-        {[
-          {
-            icon: IconTvWave,
-            title: "Electronice de uz casnic",
-            desc: "Diagnostic și reparație pentru aparatura de zi cu zi, la nivel de componentă.",
-            list: ["TV-uri LED, OLED, QLED", "Monitoare și display-uri", "Console de jocuri", "Sisteme audio și amplificatoare"],
-          },
-          {
-            icon: IconPhonePulse,
-            title: "Telefoane și laptopuri",
-            desc: "Probleme de alimentare, conectori, încărcare și componente de pe placă.",
-            list: ["Laptopuri și PC-uri", "Telefoane și tablete", "Mufe de încărcare și conectori", "Circuite de alimentare"],
-          },
-          {
-            icon: IconPcb,
-            title: "Surse și plăci electronice",
-            desc: "Reparații la nivel de componentă pentru surse și plăci de control.",
-            list: ["Surse de alimentare", "Plăci de control și comandă", "Condensatori, MOSFET, regulatoare", "Reflow și relipire componente"],
-          },
-          {
-            icon: IconSolar,
-            title: "Industrial & fotovoltaic",
-            desc: "Echipamente industriale și sisteme de energie solară.",
-            list: ["Invertoare solare", "Controlere de încărcare", "Automatizări și PLC-uri", "Echipamente de putere"],
-          },
-        ].map((item) => (
-          <motion.div
-            key={item.title}
-            variants={fadeUp}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="group relative overflow-hidden rounded-2xl border border-[#FFFFFF]/12 bg-[#0f1b2e] p-7 transition-all duration-300 hover:-translate-y-1 hover:border-[#16785F]/45 hover:bg-[#16243c]"
-          >
-            <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-[#16785F]/[0.08] blur-2xl transition-opacity duration-300 group-hover:bg-[#16785F]/[0.16]" />
-            <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#16785F] to-[#0B6B5E] text-[#FFFFFF] shadow-lg shadow-black/30">
-              <item.icon size={22} />
-            </div>
-            <h3 className="text-xl font-semibold text-[#FFFFFF]">{item.title}</h3>
-            <p className="mt-2 text-sm leading-6 text-[#FFFFFF]/60">{item.desc}</p>
-            <ul className="mt-5 space-y-2.5">
-              {item.list.map((it) => (
-                <li key={it} className="flex items-center gap-2.5 text-sm text-[#FFFFFF]/70">
-                  <Check size={15} className="shrink-0 text-[#16785F]" />
-                  {it}
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-        ))}
-      </motion.div>
+  <div className="relative z-10 mx-auto max-w-7xl">
+    {/* Header */}
+    <div className="mb-10 max-w-2xl">
+      <p className="mb-3 text-sm font-semibold text-[#16785F]">Ce reparăm</p>
+      <h2 className="text-4xl font-bold">
+        Reparații pentru electronice casnice și industriale
+      </h2>
+      <p className="mt-4 text-[#FFFFFF]/60">
+        De la electronice de uz casnic până la echipamente industriale,
+        surse, plăci electronice și sisteme fotovoltaice.
+      </p>
     </div>
 
+    {/* 4 cards full-width */}
+    <motion.div variants={stagger} className="mb-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {[
+        {
+          icon: IconTvWave,
+          title: "Electronice de uz casnic",
+          desc: "Diagnostic și reparație pentru aparatura de zi cu zi, la nivel de componentă.",
+          list: ["TV-uri LED, OLED, QLED", "Monitoare și display-uri", "Console de jocuri", "Sisteme audio și amplificatoare"],
+        },
+        {
+          icon: IconPhonePulse,
+          title: "Telefoane și laptopuri",
+          desc: "Probleme de alimentare, conectori, încărcare și componente de pe placă.",
+          list: ["Laptopuri și PC-uri", "Telefoane și tablete", "Mufe de încărcare și conectori", "Circuite de alimentare"],
+        },
+        {
+          icon: IconPcb,
+          title: "Surse și plăci electronice",
+          desc: "Reparații la nivel de componentă pentru surse și plăci de control.",
+          list: ["Surse de alimentare", "Plăci de control și comandă", "Condensatori, MOSFET, regulatoare", "Reflow și relipire componente"],
+        },
+        {
+          icon: IconSolar,
+          title: "Industrial & fotovoltaic",
+          desc: "Echipamente industriale și sisteme de energie solară.",
+          list: ["Invertoare solare", "Controlere de încărcare", "Automatizări și PLC-uri", "Echipamente de putere"],
+        },
+      ].map((item) => (
+        <motion.div
+          key={item.title}
+          variants={fadeUp}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="group relative overflow-hidden rounded-2xl border border-[#FFFFFF]/12 bg-[#0f1b2e] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[#16785F]/45 hover:bg-[#16243c]"
+        >
+          <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-[#16785F]/[0.08] blur-2xl transition-opacity duration-300 group-hover:bg-[#16785F]/[0.16]" />
+          <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-[#16785F] to-[#0B6B5E] text-[#FFFFFF] shadow-lg shadow-black/30">
+            <item.icon size={20} />
+          </div>
+          <h3 className="text-lg font-semibold text-[#FFFFFF]">{item.title}</h3>
+          <p className="mt-2 text-sm leading-6 text-[#FFFFFF]/55">{item.desc}</p>
+          <ul className="mt-4 space-y-2">
+            {item.list.map((it) => (
+              <li key={it} className="flex items-center gap-2 text-sm text-[#FFFFFF]/65">
+                <Check size={13} className="shrink-0 text-[#16785F]" />
+                {it}
+              </li>
+            ))}
+          </ul>
+        </motion.div>
+      ))}
+    </motion.div>
+
+    {/* Oscilloscope + Guarantee — full width, side by side */}
     <motion.div
       variants={fadeUp}
       transition={{ duration: 0.7, ease: "easeOut" }}
-      className="flex flex-col justify-center gap-6"
+      className="grid gap-6 lg:grid-cols-[1fr_360px]"
     >
       <div style={{ filter: "drop-shadow(0 22px 42px rgba(0,0,0,0.55))" }}>
         <ScopePanel />
       </div>
 
-      <div className="rounded-2xl border border-[#FFFFFF]/12 bg-[#0f1b2e] p-6 ring-1 ring-[#16785F]/8">
-        <p className="text-sm font-semibold text-[#16785F]">
-          Garanție inclusă
-        </p>
+      <div className="flex flex-col justify-center rounded-2xl border border-[#FFFFFF]/12 bg-[#0f1b2e] p-8 ring-1 ring-[#16785F]/8">
+        <p className="text-sm font-semibold text-[#16785F]">Garanție inclusă</p>
         <h3 className="mt-2 text-2xl font-bold text-[#FFFFFF]">
           6 luni garanție la toate reparațiile
         </h3>
@@ -518,6 +516,13 @@ export default function Home() {
           Fiecare echipament reparat este testat înainte de retur și
           beneficiază de 6 luni garanție la lucrarea efectuată.
         </p>
+        <a
+          href="/diagnosticare"
+          className="mt-6 inline-flex items-center justify-center gap-2 rounded-md bg-[#0B6B5E] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#0A5A4F]"
+        >
+          Solicită diagnosticare
+          <ArrowRight size={15} />
+        </a>
       </div>
     </motion.div>
   </div>

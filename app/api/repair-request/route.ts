@@ -1,4 +1,5 @@
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { getSupabaseServer } from "@/lib/supabase-server";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -32,6 +33,19 @@ export async function POST(request: Request) {
     return Response.json({ error: "Adresa de email nu este validă." }, { status: 400 });
   }
 
+  // If the visitor is logged in, link the request to their account so it
+  // shows up in /account. Anonymous submissions keep user_id null.
+  let user_id: string | null = null;
+  try {
+    const supabase = await getSupabaseServer();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    user_id = user?.id ?? null;
+  } catch {
+    user_id = null;
+  }
+
   const { error } = await supabaseAdmin.from("repair_requests").insert({
     full_name,
     phone,
@@ -39,6 +53,7 @@ export async function POST(request: Request) {
     device_type: device_type || "Nespecificat",
     issue_description,
     status: "New",
+    user_id,
   });
 
   if (error) {

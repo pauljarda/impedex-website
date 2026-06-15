@@ -23,9 +23,15 @@ type Req = {
 };
 
 const statusStyle: Record<string, string> = {
-  New: "bg-amber-500/15 text-amber-300 ring-amber-400/30",
-  "In Progress": "bg-blue-500/15 text-blue-300 ring-blue-400/30",
-  Completed: "bg-[#16785F]/15 text-[#16785F] ring-[#16785F]/30",
+  New: "bg-amber-50 text-amber-700 ring-amber-200",
+  "In Progress": "bg-blue-50 text-blue-700 ring-blue-200",
+  Completed: "bg-[#16785F]/10 text-[#16785F] ring-[#16785F]/25",
+};
+
+const statusLabel: Record<string, string> = {
+  New: "Nou",
+  "In Progress": "În lucru",
+  Completed: "Finalizat",
 };
 
 function fmtDate(d: string) {
@@ -54,8 +60,8 @@ export default async function AdminDashboard() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-white">Panou de control</h1>
-        <p className="mt-1.5 text-sm text-slate-400">
+        <h1 className="text-2xl font-bold text-slate-900">Panou de control</h1>
+        <p className="mt-1 text-sm text-slate-500">
           Privire de ansamblu asupra cererilor și a activității site-ului.
         </p>
       </div>
@@ -65,15 +71,15 @@ export default async function AdminDashboard() {
         <StatCard icon={Wrench} label="Total cereri" value={counts.total} tone="slate" />
         <StatCard icon={AlertTriangle} label="Noi" value={counts.new} tone="amber" />
         <StatCard icon={Loader} label="În lucru" value={counts.progress} tone="blue" />
-        <StatCard icon={CheckCircle2} label="Finalizate" value={counts.done} tone="emerald" />
+        <StatCard icon={CheckCircle2} label="Finalizate" value={counts.done} tone="green" />
       </div>
 
       {/* Visitors */}
-      <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+      <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="mb-5 flex items-center gap-2">
           <BarChart3 size={18} className="text-[#16785F]" />
-          <h2 className="text-lg font-semibold text-white">Vizitatori site</h2>
-          <span className="ml-auto text-xs text-slate-500">via Cloudflare</span>
+          <h2 className="text-base font-semibold text-slate-900">Vizitatori site</h2>
+          <span className="ml-auto text-xs text-slate-400">via Cloudflare</span>
         </div>
 
         {visitors ? (
@@ -84,8 +90,8 @@ export default async function AdminDashboard() {
             <MiniStat icon={Eye} label="Vizualizări (7 zile)" value={visitors.last7d.pageViews} />
           </div>
         ) : (
-          <div className="rounded-xl border border-dashed border-white/15 bg-white/[0.02] p-5 text-sm text-slate-400">
-            <p className="font-medium text-slate-300">Statisticile de vizitatori nu sunt încă conectate.</p>
+          <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 p-5 text-sm text-slate-500">
+            <p className="font-medium text-slate-600">Statisticile de vizitatori nu sunt încă conectate.</p>
             <p className="mt-1.5">
               Adaugă un token Cloudflare ca să vezi vizitele direct aici. Până atunci,
               le poți vedea în dashboard-ul Cloudflare → Web Analytics.
@@ -95,33 +101,33 @@ export default async function AdminDashboard() {
       </section>
 
       {/* Recent requests */}
-      <section className="rounded-2xl border border-white/10 bg-white/[0.03]">
-        <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
-          <h2 className="text-lg font-semibold text-white">Cereri recente</h2>
-          <Link href="/admin/requests" className="inline-flex items-center gap-1 text-sm font-medium text-[#16785F] hover:text-[#16785F]">
+      <section className="rounded-xl border border-slate-200 bg-white shadow-sm">
+        <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
+          <h2 className="text-base font-semibold text-slate-900">Cereri recente</h2>
+          <Link href="/admin/requests" className="inline-flex items-center gap-1 text-sm font-medium text-[#16785F] hover:underline">
             Vezi toate
             <ArrowUpRight size={15} />
           </Link>
         </div>
 
         {recent.length === 0 ? (
-          <p className="px-6 py-10 text-center text-sm text-slate-500">Nicio cerere încă.</p>
+          <p className="px-6 py-10 text-center text-sm text-slate-400">Nicio cerere încă.</p>
         ) : (
-          <div className="divide-y divide-white/5">
+          <div className="divide-y divide-slate-100">
             {recent.map((r) => (
               <Link
                 key={r.id}
                 href="/admin/requests"
-                className="flex items-center gap-4 px-6 py-4 transition hover:bg-white/[0.03]"
+                className="flex items-center gap-4 px-6 py-3.5 transition hover:bg-slate-50"
               >
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium text-white">{r.full_name || "Fără nume"}</p>
-                  <p className="truncate text-sm text-slate-400">{r.device_type || "—"}</p>
+                  <p className="truncate font-medium text-slate-900">{r.full_name || "Fără nume"}</p>
+                  <p className="truncate text-sm text-slate-500">{r.device_type || "—"}</p>
                 </div>
-                <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ring-1 ${statusStyle[r.status ?? ""] ?? "bg-slate-500/15 text-slate-300 ring-slate-400/30"}`}>
-                  {r.status || "—"}
+                <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ring-1 ${statusStyle[r.status ?? ""] ?? "bg-slate-100 text-slate-600 ring-slate-200"}`}>
+                  {statusLabel[r.status ?? ""] ?? r.status ?? "—"}
                 </span>
-                <span className="hidden shrink-0 text-xs text-slate-500 sm:block">{fmtDate(r.created_at)}</span>
+                <span className="hidden shrink-0 text-xs text-slate-400 sm:block">{fmtDate(r.created_at)}</span>
               </Link>
             ))}
           </div>
@@ -132,10 +138,10 @@ export default async function AdminDashboard() {
 }
 
 const toneMap = {
-  slate: "text-slate-300 bg-slate-500/10",
-  amber: "text-amber-300 bg-amber-500/10",
-  blue: "text-blue-300 bg-blue-500/10",
-  emerald: "text-[#16785F] bg-[#16785F]/10",
+  slate: "text-slate-600 bg-slate-100",
+  amber: "text-amber-600 bg-amber-50",
+  blue: "text-blue-600 bg-blue-50",
+  green: "text-[#16785F] bg-[#16785F]/10",
 } as const;
 
 function StatCard({
@@ -150,24 +156,24 @@ function StatCard({
   tone: keyof typeof toneMap;
 }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-      <div className={`mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl ${toneMap[tone]}`}>
+    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className={`mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg ${toneMap[tone]}`}>
         <Icon size={20} />
       </div>
-      <p className="text-3xl font-bold text-white">{value}</p>
-      <p className="mt-0.5 text-sm text-slate-400">{label}</p>
+      <p className="text-2xl font-bold text-slate-900">{value}</p>
+      <p className="mt-0.5 text-sm text-slate-500">{label}</p>
     </div>
   );
 }
 
 function MiniStat({ icon: Icon, label, value }: { icon: typeof Users; label: string; value: number }) {
   return (
-    <div className="rounded-xl bg-white/[0.03] p-4">
-      <div className="flex items-center gap-2 text-slate-400">
+    <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+      <div className="flex items-center gap-2 text-slate-500">
         <Icon size={15} />
         <span className="text-xs">{label}</span>
       </div>
-      <p className="mt-2 text-2xl font-bold text-white">{value.toLocaleString("ro-RO")}</p>
+      <p className="mt-2 text-xl font-bold text-slate-900">{value.toLocaleString("ro-RO")}</p>
     </div>
   );
 }

@@ -13,13 +13,23 @@ export async function proxy(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
+          // Respect the user's "remember me" choice: when disabled, refresh the
+          // auth cookies as session cookies (no maxAge/expires) so they vanish
+          // when the browser closes. Deletions (maxAge === 0) are left intact.
+          const remember =
+            request.cookies.get("impedex-remember")?.value !== "0";
           cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)
           );
           response = NextResponse.next({ request });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
-          );
+          cookiesToSet.forEach(({ name, value, options }) => {
+            const opts = { ...options };
+            if (!remember && opts.maxAge && opts.maxAge > 0) {
+              delete opts.maxAge;
+              delete opts.expires;
+            }
+            response.cookies.set(name, value, opts);
+          });
         },
       },
     }
