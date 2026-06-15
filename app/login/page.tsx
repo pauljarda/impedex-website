@@ -2,9 +2,17 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+import { supabase, setRememberPreference } from "@/lib/supabase";
 import Image from "next/image";
-import { ArrowLeft, Lock, Mail, User, ShieldCheck } from "lucide-react";
+import { ArrowLeft, Lock, Mail, User, ShieldCheck, Eye, EyeOff, Check } from "lucide-react";
+
+// Password rules used to gate sign-up.
+const PW_RULES = [
+  { label: "Minim 8 caractere", test: (p: string) => p.length >= 8 },
+  { label: "O literă mare", test: (p: string) => /[A-Z]/.test(p) },
+  { label: "O literă mică", test: (p: string) => /[a-z]/.test(p) },
+  { label: "O cifră", test: (p: string) => /\d/.test(p) },
+];
 
 export default function LoginPage() {
   const router = useRouter();
@@ -13,19 +21,35 @@ export default function LoginPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [remember, setRemember] = useState(true);
 
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const passedRules = PW_RULES.filter((r) => r.test(password)).length;
+  const passwordStrong = passedRules === PW_RULES.length;
+
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    setLoading(true);
     setMessage("");
     setError("");
 
+    // On sign-up, enforce a strong password before hitting the network.
+    if (!isLoginMode && !passwordStrong) {
+      setError("Parola trebuie să respecte toate cerințele de mai jos.");
+      return;
+    }
+
+    setLoading(true);
+
     if (isLoginMode) {
+      // Persist the "remember me" choice before signing in so the cookie
+      // adapter knows whether to write persistent or session cookies.
+      setRememberPreference(remember);
+
       const { error: loginError } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -246,15 +270,62 @@ export default function LoginPage() {
                       size={18}
                     />
                     <input
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 pl-12 font-semibold outline-none transition-all focus:border-[#0B6B5E] focus:bg-white"
+                      className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 pl-12 pr-12 font-semibold outline-none transition-all focus:border-[#0B6B5E] focus:bg-white"
                       placeholder="••••••••"
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((v) => !v)}
+                      aria-label={showPassword ? "Ascunde parola" : "Arată parola"}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-400 transition hover:text-[#0B6B5E]"
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
                   </div>
+
+                  {/* Password requirements — only while creating an account */}
+                  {!isLoginMode && (
+                    <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 pt-1">
+                      {PW_RULES.map((rule) => {
+                        const ok = rule.test(password);
+                        return (
+                          <div
+                            key={rule.label}
+                            className={`flex items-center gap-1.5 text-xs font-semibold transition-colors ${
+                              ok ? "text-[#0B6B5E]" : "text-slate-400"
+                            }`}
+                          >
+                            <span
+                              className={`flex h-4 w-4 items-center justify-center rounded-full ${
+                                ok ? "bg-[#0B6B5E] text-white" : "bg-slate-200 text-slate-400"
+                              }`}
+                            >
+                              <Check size={11} strokeWidth={3} />
+                            </span>
+                            {rule.label}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
+
+                {/* Remember me — only when logging in */}
+                {isLoginMode && (
+                  <label className="flex cursor-pointer select-none items-center gap-2.5 text-sm font-semibold text-slate-600">
+                    <input
+                      type="checkbox"
+                      checked={remember}
+                      onChange={(e) => setRemember(e.target.checked)}
+                      className="h-4 w-4 rounded border-slate-300 text-[#0B6B5E] accent-[#0B6B5E]"
+                    />
+                    Ține-mă minte pe acest dispozitiv
+                  </label>
+                )}
 
                 {message && (
                   <p className="rounded-xl bg-green-50 p-3 text-sm font-bold text-green-700">

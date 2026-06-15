@@ -16,10 +16,12 @@ export default function LogoMark({
   sizes,
   priority = false,
   light = false,
+  center = false,
 }: {
   sizes: string;
   priority?: boolean;
   light?: boolean;
+  center?: boolean;
 }) {
   const boxRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -90,7 +92,7 @@ export default function LogoMark({
       const scale = Math.min(cw / imgW, ch / imgH);
       const dw = imgW * scale;
       const dh = imgH * scale;
-      const dx = 0;
+      const dx = center ? (cw - dw) / 2 : 0;
       const dy = (ch - dh) / 2;
 
       const t = performance.now() / 1000;
@@ -120,7 +122,7 @@ export default function LogoMark({
       cancelAnimationFrame(raf);
       ro.disconnect();
     };
-  }, [light]);
+  }, [light, center]);
 
   return (
     <div ref={boxRef} className="absolute inset-0">
@@ -129,7 +131,7 @@ export default function LogoMark({
         alt="IMPEDEX"
         fill
         sizes={sizes}
-        className={`object-contain object-left ${light ? "brightness-0 invert" : "brightness-0"}`}
+        className={`object-contain ${center ? "object-center" : "object-left"} ${light ? "brightness-0 invert" : "brightness-0"}`}
         priority={priority}
       />
       <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true" />
