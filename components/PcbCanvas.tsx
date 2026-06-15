@@ -90,7 +90,7 @@ export default function PcbCanvas() {
         if (down) edges.push({ a: n, b: down });
       });
 
-      for (let i = 0; i < 36; i++) spawnSignal();
+      for (let i = 0; i < 40; i++) spawnSignal();
     };
 
     const draw = () => {
@@ -98,7 +98,7 @@ export default function PcbCanvas() {
 
       /* Base grid lines */
       ctx.lineWidth = 0.7;
-      ctx.strokeStyle = "rgba(31,111,91,0.22)";
+      ctx.strokeStyle = "rgba(61,179,149,0.13)";
       ctx.beginPath();
       edges.forEach(({ a, b }) => {
         ctx.moveTo(a.x, a.y);
@@ -111,9 +111,9 @@ export default function PcbCanvas() {
       edges.forEach(({ a, b }, i) => {
         if (i % 5 !== 0) return;
         const grad = ctx.createLinearGradient(a.x, a.y, b.x, b.y);
-        grad.addColorStop(0, "rgba(52,211,153,0)");
-        grad.addColorStop(0.5, "rgba(52,211,153,0.28)");
-        grad.addColorStop(1, "rgba(52,211,153,0)");
+        grad.addColorStop(0, "rgba(61,179,149,0)");
+        grad.addColorStop(0.5, "rgba(61,179,149,0.28)");
+        grad.addColorStop(1, "rgba(61,179,149,0)");
         ctx.strokeStyle = grad;
         ctx.beginPath();
         ctx.moveTo(a.x, a.y);
@@ -128,8 +128,8 @@ export default function PcbCanvas() {
 
         if (n.isChip) {
           /* small iso chip */
-          ctx.strokeStyle = `rgba(52,211,153,${0.3 + 0.25 * glow})`;
-          ctx.fillStyle = "rgba(10,31,24,0.85)";
+          ctx.strokeStyle = `rgba(61,179,149,${0.3 + 0.25 * glow})`;
+          ctx.fillStyle = "rgba(7,17,31,0.82)";
           ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.moveTo(n.x, n.y - 9);
@@ -142,13 +142,13 @@ export default function PcbCanvas() {
         } else {
           ctx.beginPath();
           ctx.arc(n.x, n.y, 4.5, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgba(52,211,153,${0.22 * glow})`;
+          ctx.strokeStyle = `rgba(61,179,149,${0.22 * glow})`;
           ctx.lineWidth = 1;
           ctx.stroke();
 
           ctx.beginPath();
           ctx.arc(n.x, n.y, 2, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(167,243,208,${0.45 + 0.45 * glow})`;
+          ctx.fillStyle = `rgba(90,205,178,${0.45 + 0.45 * glow})`;
           ctx.fill();
         }
 
@@ -158,7 +158,7 @@ export default function PcbCanvas() {
           const r = ((ping - 0.96) / 0.04) * 30;
           ctx.beginPath();
           ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgba(110,231,183,${0.45 * (1 - r / 30)})`;
+          ctx.strokeStyle = `rgba(61,179,149,${0.45 * (1 - r / 30)})`;
           ctx.lineWidth = 1;
           ctx.stroke();
         }
@@ -172,7 +172,7 @@ export default function PcbCanvas() {
           const alpha = Math.min(fadeIn, fadeOut) * 0.65;
           const drift = (cycle / n.labelDur) * 16;
           ctx.font = "600 10px ui-monospace, monospace";
-          ctx.fillStyle = `rgba(110,231,183,${alpha})`;
+          ctx.fillStyle = `rgba(61,179,149,${alpha})`;
           ctx.fillText(LABELS[n.labelIdx], n.x + 8, n.y - 6 - drift);
           if (cycle === 0) n.labelIdx = Math.floor(Math.random() * LABELS.length);
         }
@@ -197,8 +197,8 @@ export default function PcbCanvas() {
         const tx = a.x + (b.x - a.x) * tailT;
         const ty = a.y + (b.y - a.y) * tailT;
         const tail = ctx.createLinearGradient(tx, ty, x, y);
-        tail.addColorStop(0, "rgba(52,211,153,0)");
-        tail.addColorStop(1, `rgba(52,211,153,${s.alpha * 0.5})`);
+        tail.addColorStop(0, "rgba(61,179,149,0)");
+        tail.addColorStop(1, `rgba(61,179,149,${s.alpha * 0.5})`);
         ctx.strokeStyle = tail;
         ctx.lineWidth = 2;
         ctx.beginPath();
@@ -207,12 +207,12 @@ export default function PcbCanvas() {
         ctx.stroke();
 
         /* head */
-        const grad = ctx.createRadialGradient(x, y, 0, x, y, 8);
-        grad.addColorStop(0, `rgba(212,252,234,${s.alpha})`);
-        grad.addColorStop(0.4, `rgba(52,211,153,${s.alpha * 0.55})`);
-        grad.addColorStop(1, "rgba(52,211,153,0)");
+        const grad = ctx.createRadialGradient(x, y, 0, x, y, 4.5);
+        grad.addColorStop(0, `rgba(120,220,195,${s.alpha})`);
+        grad.addColorStop(0.5, `rgba(61,179,149,${s.alpha * 0.5})`);
+        grad.addColorStop(1, "rgba(61,179,149,0)");
         ctx.beginPath();
-        ctx.arc(x, y, 8, 0, Math.PI * 2);
+        ctx.arc(x, y, 4.5, 0, Math.PI * 2);
         ctx.fillStyle = grad;
         ctx.fill();
       }
@@ -241,16 +241,8 @@ export default function PcbCanvas() {
     <>
       <canvas
         ref={canvasRef}
-        className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-60"
+        className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-50"
         aria-hidden="true"
-      />
-      {/* subtle dark vignette so text stays readable over the animation */}
-      <div
-        className="pointer-events-none fixed inset-0 z-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 70% 60% at 30% 45%, rgba(7,17,31,0.82) 0%, rgba(7,17,31,0.35) 55%, transparent 100%)",
-        }}
       />
     </>
   );

@@ -68,20 +68,20 @@ export default function DiagnosticarePage() {
   };
 
   const inputBase =
-    "w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white placeholder-white/35 outline-none transition focus:border-emerald-400/50 focus:bg-white/[0.06] focus:ring-2 focus:ring-emerald-400/15";
+    "w-full rounded-xl border border-[#FFFFFF]/12 bg-[#0f1b2e] px-4 py-3 text-sm text-[#FFFFFF] placeholder-[#FFFFFF]/40 outline-none transition focus:border-[#16785F]/45 focus:bg-[#16243c] focus:ring-2 focus:ring-[#16785F]/12";
 
   return (
-    <main className="relative min-h-screen bg-[#07111f] font-sans text-white">
+    <main className="relative min-h-screen bg-[#07111f] font-sans text-[#FFFFFF]">
       <PcbCanvas />
       <SiteHeader />
 
       <section className="relative z-10 mx-auto max-w-7xl px-6 pb-24 pt-36 lg:px-8">
         <div className="mb-12 max-w-2xl">
-          <p className="mb-3 text-sm font-semibold text-emerald-300">Diagnosticare</p>
+          <p className="mb-3 text-sm font-semibold text-[#16785F]">Diagnosticare</p>
           <h1 className="text-4xl font-bold leading-tight sm:text-5xl">
             Solicită o diagnosticare
           </h1>
-          <p className="mt-4 text-base leading-7 text-white/60">
+          <p className="mt-4 text-base leading-7 text-[#FFFFFF]/60">
             Descrie defectul echipamentului și datele de contact. Revenim în
             1-2 zile lucrătoare cu un verdict și, dacă reparația merită
             încercată, organizăm ridicarea prin curier din toată țara.
@@ -94,21 +94,21 @@ export default function DiagnosticarePage() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 shadow-2xl shadow-black/40 sm:p-8"
+            className="rounded-3xl border border-[#FFFFFF]/12 bg-[#0f1b2e] p-6 shadow-xl shadow-black/30 sm:p-8"
           >
             {status === "success" ? (
               <div className="flex flex-col items-center py-10 text-center">
-                <span className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-400/10 text-emerald-300 ring-1 ring-emerald-400/30">
+                <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[#16785F]/8 text-[#16785F] ring-1 ring-[#16785F]/25">
                   <CheckCircle2 size={32} />
                 </span>
                 <h2 className="mt-6 text-2xl font-bold">Cererea a fost trimisă!</h2>
-                <p className="mt-3 max-w-md text-sm leading-6 text-white/60">
+                <p className="mt-3 max-w-md text-sm leading-6 text-[#FFFFFF]/60">
                   Mulțumim, {form.full_name.split(" ")[0] || "👋"}. Am primit
                   solicitarea și revenim în 1-2 zile lucrătoare la datele lăsate.
                 </p>
                 <a
                   href="/"
-                  className="mt-8 inline-flex items-center gap-2 rounded-md bg-[#1f6f5b] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#195c4b]"
+                  className="mt-8 inline-flex items-center gap-2 rounded-md bg-[#0B6B5E] px-6 py-3 text-sm font-semibold text-[#FFFFFF] transition hover:bg-[#0A5A4F]"
                 >
                   Înapoi la pagina principală
                   <ArrowRight size={15} />
@@ -118,7 +118,7 @@ export default function DiagnosticarePage() {
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div>
-                    <label className="mb-1.5 block text-sm font-medium text-white/80">Nume complet</label>
+                    <label className="mb-1.5 block text-sm font-medium text-[#FFFFFF]/80">Nume complet</label>
                     <input
                       required
                       type="text"
@@ -129,7 +129,7 @@ export default function DiagnosticarePage() {
                     />
                   </div>
                   <div>
-                    <label className="mb-1.5 block text-sm font-medium text-white/80">Telefon</label>
+                    <label className="mb-1.5 block text-sm font-medium text-[#FFFFFF]/80">Telefon</label>
                     <input
                       required
                       type="tel"
@@ -142,7 +142,7 @@ export default function DiagnosticarePage() {
                 </div>
 
                 <div>
-                  <label className="mb-1.5 block text-sm font-medium text-white/80">Email</label>
+                  <label className="mb-1.5 block text-sm font-medium text-[#FFFFFF]/80">Email</label>
                   <input
                     required
                     type="email"
@@ -154,22 +154,22 @@ export default function DiagnosticarePage() {
                 </div>
 
                 <div>
-                  <label className="mb-1.5 block text-sm font-medium text-white/80">Tip echipament</label>
+                  <label className="mb-1.5 block text-sm font-medium text-[#FFFFFF]/80">Tip echipament</label>
                   <select
                     required
                     value={form.device_type}
                     onChange={(e) => update("device_type", e.target.value)}
                     className={`${inputBase} appearance-none`}
                   >
-                    <option value="" disabled className="bg-[#0a1622]">Alege tipul echipamentului</option>
+                    <option value="" disabled className="bg-[#07111f] text-[#FFFFFF]">Alege tipul echipamentului</option>
                     {DEVICE_TYPES.map((d) => (
-                      <option key={d} value={d} className="bg-[#0a1622]">{d}</option>
+                      <option key={d} value={d} className="bg-[#07111f] text-[#FFFFFF]">{d}</option>
                     ))}
                   </select>
                 </div>
 
                 <div>
-                  <label className="mb-1.5 block text-sm font-medium text-white/80">Descrierea defectului</label>
+                  <label className="mb-1.5 block text-sm font-medium text-[#FFFFFF]/80">Descrierea defectului</label>
                   <textarea
                     required
                     rows={5}
@@ -181,7 +181,7 @@ export default function DiagnosticarePage() {
                 </div>
 
                 {status === "error" && (
-                  <div className="flex items-start gap-2 rounded-xl border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm text-red-200">
+                  <div className="flex items-start gap-2 rounded-xl border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm text-red-700">
                     <AlertCircle size={16} className="mt-0.5 shrink-0" />
                     <span>{errorMsg}</span>
                   </div>
@@ -190,7 +190,7 @@ export default function DiagnosticarePage() {
                 <button
                   type="submit"
                   disabled={status === "submitting"}
-                  className="group inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#1f6f5b] px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-emerald-900/30 transition-all hover:bg-[#195c4b] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="group inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#0B6B5E] px-7 py-3.5 text-sm font-semibold text-[#FFFFFF] shadow-lg shadow-black/30 transition-all hover:bg-[#0A5A4F] disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {status === "submitting" ? (
                     <>
@@ -204,7 +204,7 @@ export default function DiagnosticarePage() {
                     </>
                   )}
                 </button>
-                <p className="text-center text-xs text-white/35">
+                <p className="text-center text-xs text-[#FFFFFF]/35">
                   Prin trimitere ești de acord cu prelucrarea datelor conform politicii de confidențialitate.
                 </p>
               </form>
@@ -218,17 +218,17 @@ export default function DiagnosticarePage() {
               {STEPS.map((s) => (
                 <div
                   key={s.n}
-                  className="flex items-start gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-5"
+                  className="flex items-start gap-4 rounded-2xl border border-[#FFFFFF]/12 bg-[#0f1b2e] p-5"
                 >
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-400/10 text-emerald-300 ring-1 ring-emerald-400/20">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#16785F]/8 text-[#16785F] ring-1 ring-[#16785F]/15">
                     <s.icon size={20} />
                   </span>
                   <div>
                     <div className="flex items-baseline gap-2">
-                      <span className="font-mono text-xs text-white/30">{s.n}</span>
-                      <h3 className="font-semibold text-white">{s.title}</h3>
+                      <span className="font-mono text-xs text-[#FFFFFF]/30">{s.n}</span>
+                      <h3 className="font-semibold text-[#FFFFFF]">{s.title}</h3>
                     </div>
-                    <p className="mt-1 text-sm leading-6 text-white/55">{s.text}</p>
+                    <p className="mt-1 text-sm leading-6 text-[#FFFFFF]/55">{s.text}</p>
                   </div>
                 </div>
               ))}

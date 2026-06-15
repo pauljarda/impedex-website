@@ -5,11 +5,22 @@ import { useEffect, useRef } from "react";
 
 /*
  * Logo with live PCB traces: the greenish circuit lines + Ω pads baked into
- * logo.png are detected per-pixel at runtime, recoloured emerald and animated
- * (soft pulse + a light sweep travelling along the traces) on a canvas overlay
- * aligned with the white base logo underneath.
+ * logo.png are detected per-pixel at runtime, recoloured and animated (soft
+ * pulse + a light sweep travelling along the traces) on a canvas overlay
+ * aligned with the base logo underneath.
+ *
+ * `light` = placed on a dark (Cyprus) surface → white logo + sand traces.
+ * default = placed on a light (Sand) surface → dark logo + Cyprus traces.
  */
-export default function LogoMark({ sizes, priority = false }: { sizes: string; priority?: boolean }) {
+export default function LogoMark({
+  sizes,
+  priority = false,
+  light = false,
+}: {
+  sizes: string;
+  priority?: boolean;
+  light?: boolean;
+}) {
   const boxRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -19,6 +30,11 @@ export default function LogoMark({ sizes, priority = false }: { sizes: string; p
     if (!box || !canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+
+    // Trace colour + sweep highlight depend on the surface underneath.
+    const trace = light ? [61, 179, 149] : [0, 70, 67];
+    const shadowCol = light ? "rgba(61,179,149,0.9)" : "rgba(0,70,67,0.8)";
+    const sweepCol = light ? "160,230,205" : "40,150,128";
 
     let raf = 0;
     let traceCanvas: HTMLCanvasElement | null = null;
@@ -31,7 +47,6 @@ export default function LogoMark({ sizes, priority = false }: { sizes: string; p
       imgW = img.naturalWidth;
       imgH = img.naturalHeight;
 
-      /* extract the greenish trace pixels and recolour them emerald */
       const off = document.createElement("canvas");
       off.width = imgW;
       off.height = imgH;
@@ -44,7 +59,9 @@ export default function LogoMark({ sizes, priority = false }: { sizes: string; p
         const r = px[i], g = px[i + 1], b = px[i + 2], a = px[i + 3];
         const isTrace = a > 30 && g > r + 14 && g >= b + 4;
         if (isTrace) {
-          px[i] = 52; px[i + 1] = 211; px[i + 2] = 153;
+          px[i] = trace[0];
+          px[i + 1] = trace[1];
+          px[i + 2] = trace[2];
         } else {
           px[i + 3] = 0;
         }
@@ -70,7 +87,6 @@ export default function LogoMark({ sizes, priority = false }: { sizes: string; p
       ctx.clearRect(0, 0, cw, ch);
       if (!traceCanvas || !imgW) return;
 
-      /* replicate object-contain object-left positioning of the base image */
       const scale = Math.min(cw / imgW, ch / imgH);
       const dw = imgW * scale;
       const dh = imgH * scale;
@@ -79,24 +95,21 @@ export default function LogoMark({ sizes, priority = false }: { sizes: string; p
 
       const t = performance.now() / 1000;
 
-      /* full-opacity emerald traces with a breathing glow (keeps colour vivid
-         over the white base logo instead of washing it out) */
       ctx.save();
-      ctx.shadowColor = "rgba(52,211,153,0.9)";
+      ctx.shadowColor = shadowCol;
       ctx.shadowBlur = 3 + 4 * (0.5 + 0.5 * Math.sin(t * 2.2));
       ctx.drawImage(traceCanvas, dx, dy, dw, dh);
       ctx.drawImage(traceCanvas, dx, dy, dw, dh);
       ctx.restore();
 
-      /* light sweep travelling along the traces */
       ctx.save();
       ctx.globalCompositeOperation = "source-atop";
       const bandW = dw * 0.28;
       const sx = dx - bandW + ((t * dw * 0.45) % (dw + bandW * 2));
       const grad = ctx.createLinearGradient(sx, 0, sx + bandW, 0);
-      grad.addColorStop(0, "rgba(214,255,239,0)");
-      grad.addColorStop(0.5, "rgba(214,255,239,0.9)");
-      grad.addColorStop(1, "rgba(214,255,239,0)");
+      grad.addColorStop(0, `rgba(${sweepCol},0)`);
+      grad.addColorStop(0.5, `rgba(${sweepCol},0.85)`);
+      grad.addColorStop(1, `rgba(${sweepCol},0)`);
       ctx.fillStyle = grad;
       ctx.fillRect(dx, dy, dw, dh);
       ctx.restore();
@@ -107,7 +120,7 @@ export default function LogoMark({ sizes, priority = false }: { sizes: string; p
       cancelAnimationFrame(raf);
       ro.disconnect();
     };
-  }, []);
+  }, [light]);
 
   return (
     <div ref={boxRef} className="absolute inset-0">
@@ -116,7 +129,7 @@ export default function LogoMark({ sizes, priority = false }: { sizes: string; p
         alt="IMPEDEX"
         fill
         sizes={sizes}
-        className="object-contain object-left brightness-0 invert"
+        className={`object-contain object-left ${light ? "brightness-0 invert" : "brightness-0"}`}
         priority={priority}
       />
       <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true" />
