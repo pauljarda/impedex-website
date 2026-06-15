@@ -44,17 +44,17 @@ const VALUES = [
 
 export default function DesprePage() {
   return (
-    <main className="relative min-h-screen bg-[#07111f] font-sans text-white">
+    <main className="relative min-h-screen bg-[#07111f] font-sans text-[#FFFFFF]">
       <PcbCanvas />
       <SiteHeader />
 
       <section className="relative z-10 mx-auto max-w-7xl px-6 pb-16 pt-36 lg:px-8">
         <div className="max-w-3xl">
-          <p className="mb-3 text-sm font-semibold text-emerald-300">Despre noi</p>
+          <p className="mb-3 text-sm font-semibold text-[#16785F]">Despre noi</p>
           <h1 className="text-4xl font-bold leading-tight sm:text-5xl">
             Service electronic cu peste 30 de ani de experiență
           </h1>
-          <p className="mt-5 text-base leading-7 text-white/60">
+          <p className="mt-5 text-base leading-7 text-[#FFFFFF]/60">
             IMPEDEX este un service specializat în reparația electronicelor, de
             la aparatura de uz casnic până la echipamente industriale și sisteme
             fotovoltaice. Lucrăm la nivel de componentă, cu instrumente de
@@ -74,10 +74,10 @@ export default function DesprePage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.08 }}
-              className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 text-center"
+              className="rounded-2xl border border-[#FFFFFF]/12 bg-[#0f1b2e] p-6 text-center"
             >
-              <p className="text-3xl font-bold text-emerald-300">{s.value}</p>
-              <p className="mt-1.5 text-sm text-white/55">{s.label}</p>
+              <p className="text-3xl font-bold text-[#16785F]">{s.value}</p>
+              <p className="mt-1.5 text-sm text-[#FFFFFF]/55">{s.label}</p>
             </motion.div>
           ))}
         </div>
@@ -98,27 +98,27 @@ export default function DesprePage() {
               key={v.title}
               variants={fadeUp}
               transition={{ duration: 0.5, ease: "easeOut" }}
-              className="flex items-start gap-5 rounded-2xl border border-white/10 bg-white/[0.03] p-7"
+              className="flex items-start gap-5 rounded-2xl border border-[#FFFFFF]/12 bg-[#0f1b2e] p-7"
             >
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-400/10 text-emerald-300 ring-1 ring-emerald-400/20">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#16785F]/8 text-[#16785F] ring-1 ring-[#16785F]/15">
                 <v.icon size={22} />
               </span>
               <div>
-                <h3 className="text-lg font-semibold text-white">{v.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-white/60">{v.text}</p>
+                <h3 className="text-lg font-semibold text-[#FFFFFF]">{v.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-[#FFFFFF]/60">{v.text}</p>
               </div>
             </motion.div>
           ))}
         </motion.div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-6 rounded-3xl border border-white/10 bg-gradient-to-br from-emerald-500/10 to-transparent p-8 sm:flex-row">
+        <div className="mt-12 flex flex-col items-center justify-between gap-6 rounded-3xl border border-[#FFFFFF]/12 bg-gradient-to-br from-[#16785F]/10 to-transparent p-8 sm:flex-row">
           <div>
             <h3 className="text-2xl font-bold">Ai un echipament defect?</h3>
-            <p className="mt-2 text-sm text-white/60">Trimite-ne o cerere de diagnosticare și revenim rapid cu un verdict.</p>
+            <p className="mt-2 text-sm text-[#FFFFFF]/60">Trimite-ne o cerere de diagnosticare și revenim rapid cu un verdict.</p>
           </div>
           <a
             href="/diagnosticare"
-            className="group inline-flex shrink-0 items-center justify-center gap-2 rounded-md bg-[#1f6f5b] px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-emerald-900/30 transition-all hover:bg-[#195c4b]"
+            className="group inline-flex shrink-0 items-center justify-center gap-2 rounded-md bg-[#0B6B5E] px-7 py-3.5 text-sm font-semibold text-[#FFFFFF] shadow-lg shadow-black/30 transition-all hover:bg-[#0A5A4F]"
           >
             Solicită diagnosticare
             <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />

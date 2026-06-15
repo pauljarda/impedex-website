@@ -11,7 +11,7 @@ export default function AdminProductsPage() {
       </div>
 
       <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/15 bg-white/[0.02] px-6 py-16 text-center">
-        <span className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-300">
+        <span className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#16785F]/10 text-[#16785F]">
           <Package size={26} />
         </span>
         <p className="text-lg font-semibold text-white">Secțiune în pregătire</p>

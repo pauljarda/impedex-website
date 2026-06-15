@@ -136,14 +136,14 @@ export default function LoginPage() {
         <div className="grid flex-1 items-center gap-12 pb-14 lg:grid-cols-[1fr_440px]">
           <section className="hidden max-w-xl lg:block">
             <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 py-2 text-[10px] font-bold uppercase tracking-[0.24em] text-white/75">
-              <ShieldCheck size={14} className="text-emerald-300" />
+              <ShieldCheck size={14} className="text-[#16785F]" />
               Acces securizat
             </div>
 
             <h1 className="text-5xl font-black uppercase leading-[0.95] tracking-[-0.04em] text-white xl:text-6xl">
               Gestionează
               <span className="block">reparațiile</span>
-              <span className="block text-emerald-300">într-un singur loc</span>
+              <span className="block text-[#16785F]">într-un singur loc</span>
             </h1>
 
             <p className="mt-7 max-w-md text-base leading-8 text-slate-300">
@@ -207,7 +207,7 @@ export default function LoginPage() {
                         required={!isLoginMode}
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
-                        className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 pl-12 font-semibold outline-none transition-all focus:border-emerald-600 focus:bg-white"
+                        className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 pl-12 font-semibold outline-none transition-all focus:border-[#0B6B5E] focus:bg-white"
                         placeholder="Ex: Popescu Ion"
                       />
                     </div>
@@ -229,7 +229,7 @@ export default function LoginPage() {
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 pl-12 font-semibold outline-none transition-all focus:border-emerald-600 focus:bg-white"
+                      className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 pl-12 font-semibold outline-none transition-all focus:border-[#0B6B5E] focus:bg-white"
                       placeholder="nume@email.com"
                     />
                   </div>
@@ -250,7 +250,7 @@ export default function LoginPage() {
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 pl-12 font-semibold outline-none transition-all focus:border-emerald-600 focus:bg-white"
+                      className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 pl-12 font-semibold outline-none transition-all focus:border-[#0B6B5E] focus:bg-white"
                       placeholder="••••••••"
                     />
                   </div>
@@ -273,7 +273,7 @@ export default function LoginPage() {
                   disabled={loading}
                   className={`w-full rounded-2xl py-4 text-base font-black uppercase tracking-widest text-white transition-all disabled:cursor-not-allowed disabled:opacity-50 ${
                     isLoginMode
-                      ? "bg-[#07111f] hover:bg-[#0c1b31]"
+                      ? "bg-[#07111f] hover:bg-[#1B1F20]"
                       : "bg-[#0b3d2e] hover:bg-[#0f4d3a]"
                   }`}
                 >

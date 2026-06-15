@@ -25,7 +25,7 @@ type Req = {
 const statusStyle: Record<string, string> = {
   New: "bg-amber-500/15 text-amber-300 ring-amber-400/30",
   "In Progress": "bg-blue-500/15 text-blue-300 ring-blue-400/30",
-  Completed: "bg-emerald-500/15 text-emerald-300 ring-emerald-400/30",
+  Completed: "bg-[#16785F]/15 text-[#16785F] ring-[#16785F]/30",
 };
 
 function fmtDate(d: string) {
@@ -71,7 +71,7 @@ export default async function AdminDashboard() {
       {/* Visitors */}
       <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
         <div className="mb-5 flex items-center gap-2">
-          <BarChart3 size={18} className="text-emerald-300" />
+          <BarChart3 size={18} className="text-[#16785F]" />
           <h2 className="text-lg font-semibold text-white">Vizitatori site</h2>
           <span className="ml-auto text-xs text-slate-500">via Cloudflare</span>
         </div>
@@ -98,7 +98,7 @@ export default async function AdminDashboard() {
       <section className="rounded-2xl border border-white/10 bg-white/[0.03]">
         <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
           <h2 className="text-lg font-semibold text-white">Cereri recente</h2>
-          <Link href="/admin/requests" className="inline-flex items-center gap-1 text-sm font-medium text-emerald-300 hover:text-emerald-200">
+          <Link href="/admin/requests" className="inline-flex items-center gap-1 text-sm font-medium text-[#16785F] hover:text-[#16785F]">
             Vezi toate
             <ArrowUpRight size={15} />
           </Link>
@@ -135,7 +135,7 @@ const toneMap = {
   slate: "text-slate-300 bg-slate-500/10",
   amber: "text-amber-300 bg-amber-500/10",
   blue: "text-blue-300 bg-blue-500/10",
-  emerald: "text-emerald-300 bg-emerald-500/10",
+  emerald: "text-[#16785F] bg-[#16785F]/10",
 } as const;
 
 function StatCard({
