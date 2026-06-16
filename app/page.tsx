@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
@@ -125,9 +125,9 @@ function HeroStats() {
           <div>
             <div className="flex items-baseline gap-2.5">
               <p className="text-2xl font-bold text-[#FFFFFF]">{s.value}</p>
-              <p className="text-sm text-[#FFFFFF]/50">{s.label}</p>
+              <p className="text-sm text-[#FFFFFF]/65">{s.label}</p>
             </div>
-            <p className="mt-1.5 text-[13px] leading-6 text-[#FFFFFF]/40">{s.detail}</p>
+            <p className="mt-1.5 text-[13px] leading-6 text-[#FFFFFF]/60">{s.detail}</p>
           </div>
         </motion.div>
       ))}
@@ -240,9 +240,6 @@ function ScopePanel() {
         ))}
 
         {/* brand */}
-        <text x="26" y="30" fontFamily="ui-sans-serif, system-ui" fontSize="14" fontWeight="700" letterSpacing="2.5" fill="#E6E4DC">
-          IMPEDEX
-        </text>
         <text x="26" y="42" fontFamily="monospace" fontSize="7.5" letterSpacing="1" fill="#6A716B">
           DSO-2204 · DIGITAL STORAGE OSCILLOSCOPE · 200 MHz · 1 GSa/s
         </text>
@@ -266,7 +263,7 @@ function ScopePanel() {
 
         {/* waveform area */}
         <svg x="36" y="92" width="442" height="206" viewBox="0 0 500 300" preserveAspectRatio="none">
-          {/* graticule 10×8 */}
+          {/* graticule 25×8 */}
           <g stroke="#1a3a6b" strokeWidth="0.6">
             {Array.from({ length: 9 }, (_, i) => (
               <line key={`v${i}`} x1={50 * (i + 1)} y1="0" x2={50 * (i + 1)} y2="300" opacity={i === 4 ? 0.4 : 0.16} />
@@ -439,7 +436,7 @@ export default function Home() {
       <h2 className="text-4xl font-bold">
         Reparații pentru electronice casnice și industriale
       </h2>
-      <p className="mt-4 text-[#FFFFFF]/60">
+      <p className="mt-4 text-[#FFFFFF]/75">
         De la electronice de uz casnic până la echipamente industriale,
         surse, plăci electronice și sisteme fotovoltaice.
       </p>
@@ -484,10 +481,10 @@ export default function Home() {
             <item.icon size={20} />
           </div>
           <h3 className="text-lg font-semibold text-[#FFFFFF]">{item.title}</h3>
-          <p className="mt-2 text-sm leading-6 text-[#FFFFFF]/55">{item.desc}</p>
+          <p className="mt-2 text-sm leading-6 text-[#FFFFFF]/70">{item.desc}</p>
           <ul className="mt-4 space-y-2">
             {item.list.map((it) => (
-              <li key={it} className="flex items-center gap-2 text-sm text-[#FFFFFF]/65">
+              <li key={it} className="flex items-center gap-2 text-sm text-[#FFFFFF]/80">
                 <Check size={13} className="shrink-0 text-[#16785F]" />
                 {it}
               </li>
@@ -512,7 +509,7 @@ export default function Home() {
         <h3 className="mt-2 text-2xl font-bold text-[#FFFFFF]">
           6 luni garanție la toate reparațiile
         </h3>
-        <p className="mt-3 text-sm leading-6 text-[#FFFFFF]/65">
+        <p className="mt-3 text-sm leading-6 text-[#FFFFFF]/80">
           Fiecare echipament reparat este testat înainte de retur și
           beneficiază de 6 luni garanție la lucrarea efectuată.
         </p>
@@ -549,7 +546,7 @@ export default function Home() {
                   Poți trimite echipamentul din orice oraș
                 </h2>
 
-                <p className="mt-4 max-w-2xl text-[#FFFFFF]/60">
+                <p className="mt-4 max-w-2xl text-[#FFFFFF]/75">
                   Completezi o cerere de diagnosticare, analizăm solicitarea,
                   iar dacă reparația merită încercată, putem organiza ridicarea
                   prin curier.
@@ -600,7 +597,7 @@ export default function Home() {
                     <h3 className="mt-4 text-lg font-semibold text-[#FFFFFF]">
                       {item.title}
                     </h3>
-                    <p className="mt-2 text-sm leading-6 text-[#FFFFFF]/55">
+                    <p className="mt-2 text-sm leading-6 text-[#FFFFFF]/70">
                       {item.text}
                     </p>
                   </motion.div>

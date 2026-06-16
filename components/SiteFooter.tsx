@@ -41,7 +41,7 @@ export default function SiteFooter() {
             <div className="grid gap-8 sm:grid-cols-3">
               <div>
                 <h4 className="font-semibold text-white">Informații</h4>
-                <div className="mt-3 space-y-2 text-sm text-white/65">
+                <div className="mt-3 space-y-2 text-sm text-white/80">
                   <a href="/#ce-reparam" className="block hover:text-white">Servicii</a>
                   <a href="/diagnosticare" className="block hover:text-white">Diagnosticare</a>
                   <a href="/despre" className="block hover:text-white">Despre noi</a>
@@ -51,7 +51,7 @@ export default function SiteFooter() {
 
               <div>
                 <h4 className="font-semibold text-white">Legal</h4>
-                <div className="mt-3 space-y-2 text-sm text-white/65">
+                <div className="mt-3 space-y-2 text-sm text-white/80">
                   <a href="/privacy-policy" className="block hover:text-white">Privacy Policy</a>
                   <a href="/cookies" className="block hover:text-white">Politica Cookies</a>
                   <a href="/gdpr" className="block hover:text-white">GDPR</a>
@@ -104,7 +104,7 @@ export default function SiteFooter() {
                     {item.q}
                     <Plus size={15} className="shrink-0 text-[#16785F] transition-transform duration-200 group-open:rotate-45" />
                   </summary>
-                  <p className="mt-2 text-sm leading-6 text-white/60">{item.a}</p>
+                  <p className="mt-2 text-sm leading-6 text-white/75">{item.a}</p>
                 </details>
               ))}
             </div>
@@ -113,7 +113,7 @@ export default function SiteFooter() {
         </div>
       </div>
 
-      <div className="mx-auto mt-4 flex max-w-7xl flex-col gap-2 border-t border-white/15 pt-4 text-sm text-white/45 md:flex-row md:items-center md:justify-between">
+      <div className="mx-auto mt-4 flex max-w-7xl flex-col gap-2 border-t border-white/15 pt-4 text-sm text-white/65 md:flex-row md:items-center md:justify-between">
         <p>© {new Date().getFullYear()} IMPEDEX · Reparații Electronice Profesionale</p>
         <p>Română (România)</p>
       </div>

@@ -113,7 +113,7 @@ export default function DiagnosticarePage() {
           <h1 className="text-4xl font-bold leading-tight sm:text-5xl">
             Solicită o diagnosticare
           </h1>
-          <p className="mt-4 text-base leading-7 text-[#FFFFFF]/60">
+          <p className="mt-4 text-base leading-7 text-[#FFFFFF]/75">
             Descrie defectul echipamentului și datele de contact. Revenim în
             1-2 zile lucrătoare cu un verdict și, dacă reparația merită
             încercată, organizăm ridicarea prin curier din toată țara.
@@ -134,7 +134,7 @@ export default function DiagnosticarePage() {
                   <CheckCircle2 size={32} />
                 </span>
                 <h2 className="mt-6 text-2xl font-bold">Cererea a fost trimisă!</h2>
-                <p className="mt-3 max-w-md text-sm leading-6 text-[#FFFFFF]/60">
+                <p className="mt-3 max-w-md text-sm leading-6 text-[#FFFFFF]/75">
                   Mulțumim, {form.full_name.split(" ")[0] || "👋"}. Am primit
                   solicitarea și revenim în 1-2 zile lucrătoare la datele lăsate.
                 </p>
@@ -244,7 +244,7 @@ export default function DiagnosticarePage() {
                     </>
                   )}
                 </button>
-                <p className="text-center text-xs text-[#FFFFFF]/35">
+                <p className="text-center text-xs text-[#FFFFFF]/55">
                   Prin trimitere ești de acord cu prelucrarea datelor conform politicii de confidențialitate.
                 </p>
               </form>
@@ -265,10 +265,10 @@ export default function DiagnosticarePage() {
                   </span>
                   <div>
                     <div className="flex items-baseline gap-2">
-                      <span className="font-mono text-xs text-[#FFFFFF]/30">{s.n}</span>
+                      <span className="font-mono text-xs text-[#FFFFFF]/50">{s.n}</span>
                       <h3 className="font-semibold text-[#FFFFFF]">{s.title}</h3>
                     </div>
-                    <p className="mt-1 text-sm leading-6 text-[#FFFFFF]/55">{s.text}</p>
+                    <p className="mt-1 text-sm leading-6 text-[#FFFFFF]/70">{s.text}</p>
                   </div>
                 </div>
               ))}

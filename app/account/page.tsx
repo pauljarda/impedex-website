@@ -128,7 +128,7 @@ export default function AccountPage() {
             <h1 className="text-4xl font-bold leading-tight">
               Bună, {name.split(" ")[0]} 👋
             </h1>
-            <p className="mt-2 text-[#FFFFFF]/55">
+            <p className="mt-2 text-[#FFFFFF]/70">
               Aici îți vezi cererile de diagnosticare și statusul lor.
             </p>
           </div>
@@ -142,7 +142,7 @@ export default function AccountPage() {
         </div>
 
         {loading ? (
-          <div className="mt-12 flex items-center gap-3 text-[#FFFFFF]/50">
+          <div className="mt-12 flex items-center gap-3 text-[#FFFFFF]/65">
             <Loader2 size={18} className="animate-spin" />
             Se încarcă...
           </div>
@@ -208,7 +208,7 @@ export default function AccountPage() {
                   <p className="text-lg font-semibold text-white">
                     Nu ai trimis încă nicio cerere
                   </p>
-                  <p className="mt-1.5 max-w-sm text-sm text-[#FFFFFF]/50">
+                  <p className="mt-1.5 max-w-sm text-sm text-[#FFFFFF]/65">
                     Trimite o cerere de diagnosticare și o vei urmări de aici.
                   </p>
                   <a
@@ -237,7 +237,7 @@ export default function AccountPage() {
                             <p className="font-semibold text-white">
                               {r.device_type || "Echipament"}
                             </p>
-                            <p className="mt-0.5 text-xs text-[#FFFFFF]/40">
+                            <p className="mt-0.5 text-xs text-[#FFFFFF]/60">
                               Trimisă la {fmtDate(r.created_at)}
                             </p>
                           </div>
@@ -249,7 +249,7 @@ export default function AccountPage() {
                           </span>
                         </div>
                         {r.issue_description && (
-                          <p className="mt-3 line-clamp-2 text-sm leading-6 text-[#FFFFFF]/60">
+                          <p className="mt-3 line-clamp-2 text-sm leading-6 text-[#FFFFFF]/75">
                             {r.issue_description}
                           </p>
                         )}
@@ -279,9 +279,9 @@ function InfoRow({
 }) {
   return (
     <div className="flex items-start gap-3">
-      <Icon size={16} className="mt-0.5 shrink-0 text-[#FFFFFF]/35" />
+      <Icon size={16} className="mt-0.5 shrink-0 text-[#FFFFFF]/55" />
       <div className="min-w-0">
-        <p className="text-xs text-[#FFFFFF]/40">{label}</p>
+        <p className="text-xs text-[#FFFFFF]/60">{label}</p>
         <p className="truncate font-medium text-[#FFFFFF]/85">{value}</p>
       </div>
     </div>
