@@ -54,7 +54,7 @@ export default function DesprePage() {
           <h1 className="text-4xl font-bold leading-tight sm:text-5xl">
             Service electronic cu peste 30 de ani de experiență
           </h1>
-          <p className="mt-5 text-base leading-7 text-[#FFFFFF]/60">
+          <p className="mt-5 text-base leading-7 text-[#FFFFFF]/75">
             IMPEDEX este un service specializat în reparația electronicelor, de
             la aparatura de uz casnic până la echipamente industriale și sisteme
             fotovoltaice. Lucrăm la nivel de componentă, cu instrumente de
@@ -77,7 +77,7 @@ export default function DesprePage() {
               className="rounded-2xl border border-[#FFFFFF]/12 bg-[#0f1b2e] p-6 text-center"
             >
               <p className="text-3xl font-bold text-[#16785F]">{s.value}</p>
-              <p className="mt-1.5 text-sm text-[#FFFFFF]/55">{s.label}</p>
+              <p className="mt-1.5 text-sm text-[#FFFFFF]/70">{s.label}</p>
             </motion.div>
           ))}
         </div>
@@ -105,7 +105,7 @@ export default function DesprePage() {
               </span>
               <div>
                 <h3 className="text-lg font-semibold text-[#FFFFFF]">{v.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-[#FFFFFF]/60">{v.text}</p>
+                <p className="mt-2 text-sm leading-6 text-[#FFFFFF]/75">{v.text}</p>
               </div>
             </motion.div>
           ))}
@@ -114,7 +114,7 @@ export default function DesprePage() {
         <div className="mt-12 flex flex-col items-center justify-between gap-6 rounded-3xl border border-[#FFFFFF]/12 bg-gradient-to-br from-[#16785F]/10 to-transparent p-8 sm:flex-row">
           <div>
             <h3 className="text-2xl font-bold">Ai un echipament defect?</h3>
-            <p className="mt-2 text-sm text-[#FFFFFF]/60">Trimite-ne o cerere de diagnosticare și revenim rapid cu un verdict.</p>
+            <p className="mt-2 text-sm text-[#FFFFFF]/75">Trimite-ne o cerere de diagnosticare și revenim rapid cu un verdict.</p>
           </div>
           <a
             href="/diagnosticare"

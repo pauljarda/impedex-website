@@ -60,7 +60,7 @@ export default function ContactPage() {
         <div className="mb-12 max-w-2xl">
           <p className="mb-3 text-sm font-semibold text-[#16785F]">Contact</p>
           <h1 className="text-4xl font-bold leading-tight sm:text-5xl">Ia legătura cu noi</h1>
-          <p className="mt-4 text-base leading-7 text-[#FFFFFF]/60">
+          <p className="mt-4 text-base leading-7 text-[#FFFFFF]/75">
             Scrie-ne pentru orice întrebare despre o reparație, un echipament
             sau procesul de diagnosticare. Răspundem rapid în timpul programului.
           </p>
@@ -81,7 +81,7 @@ export default function ContactPage() {
                   <c.icon size={19} />
                 </span>
                 <div>
-                  <p className="text-xs uppercase tracking-wider text-[#FFFFFF]/40">{c.label}</p>
+                  <p className="text-xs uppercase tracking-wider text-[#FFFFFF]/60">{c.label}</p>
                   <p className="mt-0.5 font-medium text-[#FFFFFF]">{c.value}</p>
                 </div>
               </a>
@@ -95,14 +95,14 @@ export default function ContactPage() {
               <div className="mt-4 space-y-2">
                 {HOURS.map((h) => (
                   <div key={h.d} className="flex items-center justify-between text-sm">
-                    <span className="text-[#FFFFFF]/55">{h.d}</span>
+                    <span className="text-[#FFFFFF]/70">{h.d}</span>
                     <span className="font-medium text-[#FFFFFF]/85">{h.h}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="flex items-center gap-3 rounded-2xl border border-[#FFFFFF]/12 bg-[#0f1b2e] p-5 text-sm text-[#FFFFFF]/55">
+            <div className="flex items-center gap-3 rounded-2xl border border-[#FFFFFF]/12 bg-[#0f1b2e] p-5 text-sm text-[#FFFFFF]/70">
               <MapPin size={18} className="shrink-0 text-[#16785F]" />
               Ridicare și retur prin curier din toată România.
             </div>
@@ -121,7 +121,7 @@ export default function ContactPage() {
                   <CheckCircle2 size={32} />
                 </span>
                 <h2 className="mt-6 text-2xl font-bold">Mesaj trimis!</h2>
-                <p className="mt-3 max-w-md text-sm leading-6 text-[#FFFFFF]/60">
+                <p className="mt-3 max-w-md text-sm leading-6 text-[#FFFFFF]/75">
                   Mulțumim, revenim cât de curând la datele lăsate.
                 </p>
               </div>
