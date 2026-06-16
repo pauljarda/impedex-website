@@ -4,6 +4,8 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+console.log("🔧 RESEND_API_KEY loaded:", process.env.RESEND_API_KEY ? "✓ YES" : "✗ NO");
+
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function str(v: unknown, max: number) {
@@ -65,7 +67,9 @@ export async function POST(request: Request) {
   }
 
   // Fire-and-forget emails — don't block or fail the request if email errors
+  console.log("📧 Sending emails...");
   void sendEmails({ full_name, email, phone, device_type, issue_description });
+  console.log("📧 Email send initiated (async)");
 
   return Response.json({ ok: true });
 }
@@ -77,15 +81,17 @@ async function sendEmails(d: {
   device_type: string;
   issue_description: string;
 }) {
-  const firstName = d.full_name.split(" ")[0] || "Client";
+  try {
+    console.log("📧 sendEmails START, API key:", process.env.RESEND_API_KEY ? "SET" : "MISSING");
+    const firstName = d.full_name.split(" ")[0] || "Client";
 
-  await Promise.allSettled([
-    // Confirmation to client
-    resend.emails.send({
-      from: "IMPEDEX <noreply@impedex.ro>",
-      to: d.email,
-      subject: "Am primit cererea ta — IMPEDEX",
-      html: `
+    const results = await Promise.allSettled([
+      // Confirmation to client
+      resend.emails.send({
+        from: "IMPEDEX <noreply@impedex.ro>",
+        to: d.email,
+        subject: "Am primit cererea ta — IMPEDEX",
+        html: `
 <!DOCTYPE html>
 <html lang="ro">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -149,6 +155,16 @@ async function sendEmails(d: {
   </table>
 </body>
 </html>`,
-    }),
-  ]);
+      }),
+    ]);
+
+    console.log("📧 Email results:", results.map((r) => (r.status === "fulfilled" ? "✓" : "✗")));
+    results.forEach((r, i) => {
+      if (r.status === "rejected") {
+        console.error(`📧 Email ${i} failed:`, r.reason);
+      }
+    });
+  } catch (err) {
+    console.error("📧 sendEmails error:", err);
+  }
 }
