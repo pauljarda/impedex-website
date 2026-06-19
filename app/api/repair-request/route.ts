@@ -4,8 +4,6 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-console.log("🔧 RESEND_API_KEY loaded:", process.env.RESEND_API_KEY ? "✓ YES" : "✗ NO");
-
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function str(v: unknown, max: number) {
@@ -51,7 +49,7 @@ export async function POST(request: Request) {
     user_id = null;
   }
 
-  const { error } = await supabaseAdmin.from("repair_requests").insert({
+  const { data, error } = await supabaseAdmin.from("repair_requests").insert({
     full_name,
     phone,
     email,
@@ -59,22 +57,28 @@ export async function POST(request: Request) {
     issue_description,
     status: "New",
     user_id,
-  });
+  }).select("id").single();
 
-  if (error) {
+  if (error || !data) {
     console.error("repair-request insert error:", error);
     return Response.json({ error: "Nu am putut salva cererea." }, { status: 500 });
   }
 
   // Fire-and-forget emails — don't block or fail the request if email errors
-  console.log("📧 Sending emails...");
-  void sendEmails({ full_name, email, phone, device_type, issue_description });
-  console.log("📧 Email send initiated (async)");
+  void sendEmails({
+    requestId: data.id,
+    full_name,
+    email,
+    phone,
+    device_type,
+    issue_description
+  });
 
   return Response.json({ ok: true });
 }
 
 async function sendEmails(d: {
+  requestId: string;
   full_name: string;
   email: string;
   phone: string;
@@ -82,7 +86,6 @@ async function sendEmails(d: {
   issue_description: string;
 }) {
   try {
-    console.log("📧 sendEmails START, API key:", process.env.RESEND_API_KEY ? "SET" : "MISSING");
     const firstName = d.full_name.split(" ")[0] || "Client";
 
     const results = await Promise.allSettled([
@@ -104,14 +107,22 @@ async function sendEmails(d: {
           <p style="margin:4px 0 0;color:#ffffff;font-size:20px;font-weight:700">Reparații Electronice Profesionale</p>
         </td></tr>
         <tr><td style="padding:32px">
-          <p style="margin:0 0 16px;font-size:16px;color:#18181b">Bună, <strong>${firstName}</strong> 👋</p>
-          <p style="margin:0 0 16px;font-size:15px;color:#3f3f46;line-height:1.6">Am primit cererea ta de diagnosticare și revenim în <strong>1-2 zile lucrătoare</strong> cu un verdict.</p>
-          <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;border-radius:8px;padding:16px;margin:20px 0">
-            <tr><td style="font-size:13px;color:#71717a;padding:4px 0">Echipament</td><td style="font-size:13px;color:#18181b;font-weight:600;text-align:right">${d.device_type}</td></tr>
-            <tr><td style="font-size:13px;color:#71717a;padding:4px 0">Telefon</td><td style="font-size:13px;color:#18181b;text-align:right">${d.phone || "—"}</td></tr>
+          <p style="margin:0 0 4px;font-size:12px;color:#71717a">Referință cerere</p>
+          <p style="margin:0 0 20px;font-size:14px;color:#18181b;font-family:monospace;font-weight:600">${d.requestId}</p>
+
+          <p style="margin:0 0 16px;font-size:16px;color:#18181b">Bună, <strong>${firstName}</strong></p>
+          <p style="margin:0 0 20px;font-size:15px;color:#3f3f46;line-height:1.6">Am primit cererea ta de diagnosticare și revenim în <strong>1-2 zile lucrătoare</strong> cu un verdict.</p>
+
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;border-radius:8px;margin:20px 0">
+            <tr><td style="padding:12px 16px;border-bottom:1px solid #e4e4e7"><span style="font-size:13px;color:#71717a">Echipament</span></td></tr>
+            <tr><td style="padding:12px 16px;font-size:14px;color:#18181b;font-weight:600">${d.device_type}</td></tr>
+            <tr><td style="padding:12px 16px;border-bottom:1px solid #e4e4e7"><span style="font-size:13px;color:#71717a">Telefon</span></td></tr>
+            <tr><td style="padding:12px 16px;font-size:14px;color:#18181b">${d.phone || "—"}</td></tr>
           </table>
+
           <p style="margin:0 0 8px;font-size:13px;color:#71717a">Descrierea defectului:</p>
           <p style="margin:0 0 24px;font-size:14px;color:#3f3f46;line-height:1.6;border-left:3px solid #16785F;padding-left:12px">${d.issue_description}</p>
+
           <p style="margin:0;font-size:14px;color:#3f3f46;line-height:1.6">Dacă ai întrebări, răspunde direct la acest email sau scrie-ne la <a href="mailto:contact@impedex.ro" style="color:#16785F">contact@impedex.ro</a>.</p>
         </td></tr>
         <tr><td style="padding:20px 32px;border-top:1px solid #f4f4f5;background:#fafafa">
@@ -141,6 +152,7 @@ async function sendEmails(d: {
           <p style="margin:4px 0 0;color:#ffffff;font-size:18px;font-weight:700">Cerere nouă de diagnosticare</p>
         </td></tr>
         <tr><td style="padding:28px 32px">
+          <p style="margin:0 0 16px;font-size:13px;color:#71717a">Referință: <span style="font-family:monospace;font-weight:600;color:#18181b">${d.requestId}</span></p>
           <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse">
             <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:10px 0;font-size:13px;color:#71717a;width:140px">Nume</td><td style="padding:10px 0;font-size:14px;color:#18181b;font-weight:600">${d.full_name}</td></tr>
             <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:10px 0;font-size:13px;color:#71717a">Email</td><td style="padding:10px 0;font-size:14px"><a href="mailto:${d.email}" style="color:#16785F">${d.email}</a></td></tr>
@@ -158,13 +170,7 @@ async function sendEmails(d: {
       }),
     ]);
 
-    console.log("📧 Email results:", results.map((r) => (r.status === "fulfilled" ? "✓" : "✗")));
-    results.forEach((r, i) => {
-      if (r.status === "rejected") {
-        console.error(`📧 Email ${i} failed:`, r.reason);
-      }
-    });
   } catch (err) {
-    console.error("📧 sendEmails error:", err);
+    console.error("repair-request email error:", err);
   }
 }
