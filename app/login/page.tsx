@@ -8,11 +8,45 @@ import { ArrowLeft, Lock, Mail, User, ShieldCheck, Eye, EyeOff, Check } from "lu
 
 // Password rules used to gate sign-up.
 const PW_RULES = [
-  { label: "Minim 8 caractere", test: (p: string) => p.length >= 8 },
+  { label: "Minim 10 caractere", test: (p: string) => p.length >= 10 },
   { label: "O literă mare", test: (p: string) => /[A-Z]/.test(p) },
   { label: "O literă mică", test: (p: string) => /[a-z]/.test(p) },
   { label: "O cifră", test: (p: string) => /\d/.test(p) },
 ];
+
+/*
+ * Reject passwords that appear in known data breaches.
+ *
+ * Complexity rules alone don't help: "Password1" satisfies every rule above
+ * and is one of the most-breached passwords in existence. This is the same
+ * check Supabase sells as a Pro feature — it queries HaveIBeenPwned, which is
+ * free and needs no API key.
+ *
+ * k-anonymity: we SHA-1 the password locally and send only the first 5 hex
+ * characters of the hash. HIBP returns every suffix sharing that prefix
+ * (~800 of them) and we match locally, so the password itself is never
+ * transmitted and HIBP cannot tell which entry we were asking about.
+ */
+async function isPwnedPassword(password: string): Promise<boolean> {
+  const digest = await crypto.subtle.digest(
+    "SHA-1",
+    new TextEncoder().encode(password)
+  );
+  const hash = Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("")
+    .toUpperCase();
+
+  const res = await fetch(`https://api.pwnedpasswords.com/range/${hash.slice(0, 5)}`);
+  // Fail open: if HIBP is unreachable, don't block people from signing up.
+  if (!res.ok) return false;
+
+  const suffix = hash.slice(5);
+  const body = await res.text();
+  return body
+    .split("\n")
+    .some((line) => line.split(":")[0].trim() === suffix);
+}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -95,6 +129,20 @@ export default function LoginPage() {
       }
 
       return;
+    }
+
+    // Block passwords known to be in breach corpora. Wrapped so a network
+    // failure never prevents a legitimate sign-up.
+    try {
+      if (await isPwnedPassword(password)) {
+        setError(
+          "Această parolă apare în scurgeri de date publice. Alege alta."
+        );
+        setLoading(false);
+        return;
+      }
+    } catch {
+      // HIBP unreachable — continue rather than blocking account creation.
     }
 
     const { error: signupError } = await supabase.auth.signUp({
