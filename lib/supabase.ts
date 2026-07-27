@@ -93,6 +93,7 @@ export function setRememberPreference(remember: boolean) {
   if (typeof document === "undefined") return;
   // The preference cookie is long-lived so the choice survives and the server
   // can read it; storing "0" persistently just means "use session cookies".
+  const secure = location.protocol === "https:" ? "; Secure" : "";
   document.cookie =
-    `${REMEMBER_COOKIE}=${remember ? "1" : "0"}; Path=/; Max-Age=${400 * 24 * 60 * 60}; SameSite=Lax`;
+    `${REMEMBER_COOKIE}=${remember ? "1" : "0"}; Path=/; Max-Age=${400 * 24 * 60 * 60}; SameSite=Lax${secure}`;
 }

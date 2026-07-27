@@ -56,7 +56,9 @@ export default function LoginPage() {
       });
 
       if (loginError) {
-        setError(loginError.message);
+        // Generic message on purpose: Supabase distinguishes "user not found"
+        // from "wrong password", which would let anyone probe for valid emails.
+        setError("Email sau parolă incorecte.");
         setLoading(false);
         return;
       }
