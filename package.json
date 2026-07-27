@@ -15,10 +15,15 @@
     "clsx": "^2.1.1",
     "framer-motion": "^12.40.0",
     "lucide-react": "^1.0.1",
-    "next": "16.2.1",
+    "next": "16.2.12",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "resend": "^6.12.4"
+  },
+  "//overrides": "sharp and postcss are transitive deps of next. npm audit's suggested fix for them is `npm audit fix --force`, which resolves to next@9.3.3 and destroys the build. Overriding them directly patches the advisories without touching Next. Revisit when Next ships versions that already depend on patched releases.",
+  "overrides": {
+    "sharp": "^0.35.3",
+    "postcss": "^8.5.23"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -26,7 +31,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.2.1",
+    "eslint-config-next": "16.2.12",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
