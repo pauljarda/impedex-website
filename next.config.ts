@@ -14,7 +14,8 @@ const csp = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self' data:",
-  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://cloudflareinsights.com",
+  // api.pwnedpasswords.com: breached-password check at sign-up (see app/login/page.tsx)
+  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://cloudflareinsights.com https://api.pwnedpasswords.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",
