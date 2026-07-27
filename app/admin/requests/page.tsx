@@ -15,6 +15,7 @@ import {
   CheckCircleIcon,
   ExclamationTriangleIcon,
   ArrowPathIcon,
+  TrashIcon,
 } from "@heroicons/react/24/outline";
 import { supabase } from "@/lib/supabase";
 
@@ -140,6 +141,38 @@ export default function RequestsPage() {
     }
 
     setRequests((prev) => prev.map((r) => (r.id === id ? { ...r, status: newStatus } : r)));
+    setUpdatingId(null);
+  };
+
+  // GDPR right to erasure. Lets an emailed "delete my data" request be handled
+  // from the dashboard rather than the Supabase console. Irreversible — the
+  // row is deleted, not archived.
+  const deleteRequest = async (req: Request) => {
+    const confirmed = confirm(
+      `Ștergi definitiv cererea lui ${req.full_name || "client necunoscut"} (${req.email || "fără email"})?\n\nAceastă acțiune nu poate fi anulată.`
+    );
+    if (!confirmed) return;
+
+    setUpdatingId(req.id);
+    // `.select()` so we can tell a real deletion from one RLS silently refused.
+    // Without it a blocked delete returns no error and zero rows, and the row
+    // would vanish from the UI while surviving in the database — the worst
+    // possible outcome for an erasure request.
+    const { data, error } = await supabase
+      .from("repair_requests")
+      .delete()
+      .eq("id", req.id)
+      .select("id");
+
+    if (error || !data || data.length === 0) {
+      console.error("Error deleting request:", error ?? "no rows deleted (RLS?)");
+      alert("Ștergerea nu a reușit. Cererea NU a fost ștearsă.");
+      setUpdatingId(null);
+      return;
+    }
+
+    setRequests((prev) => prev.filter((r) => r.id !== req.id));
+    setSelectedId(null);
     setUpdatingId(null);
   };
 
@@ -343,6 +376,25 @@ export default function RequestsPage() {
                   <p className="text-sm leading-relaxed text-slate-500">
                     • Atribuie tehnician • Adaugă preț și piese • Încarcă poze/video • Setează termen estimativ • Notează comunicarea cu clientul
                   </p>
+                </div>
+
+                {/* GDPR erasure */}
+                <div className="flex flex-col gap-3 rounded-lg border border-red-200 bg-red-50/40 p-5 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-red-500/80">Ștergere date</h3>
+                    <p className="mt-1 text-sm leading-relaxed text-slate-600">
+                      Șterge definitiv această cerere, inclusiv datele de contact ale clientului.
+                      Folosește pentru solicitările GDPR de ștergere.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => deleteRequest(selectedRequest)}
+                    disabled={updatingId === selectedRequest.id}
+                    className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-red-300 bg-white px-4 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <TrashIcon className="h-4 w-4" />
+                    Șterge cererea
+                  </button>
                 </div>
               </motion.div>
             )}
