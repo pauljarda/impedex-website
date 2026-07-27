@@ -7,11 +7,23 @@ import Image from "next/image";
 import { ArrowLeft, Lock, Mail, User, ShieldCheck, Eye, EyeOff, Check } from "lucide-react";
 
 // Password rules used to gate sign-up.
+//
+// These must mirror the Supabase Auth "Password requirements" setting
+// (currently: lowercase + uppercase + digits + symbols). If they drift apart,
+// the user sees every rule tick green and then gets rejected server-side by
+// Supabase with an untranslated error — so update both together.
+//
+// The symbol set matches Supabase's own list rather than a broad
+// "any non-alphanumeric" check, so a character we accept is never one
+// Supabase rejects.
+const PW_SYMBOLS = /[!@#$%^&*()_+\-=[\]{};':"\\|<>?,./]/;
+
 const PW_RULES = [
   { label: "Minim 10 caractere", test: (p: string) => p.length >= 10 },
   { label: "O literă mare", test: (p: string) => /[A-Z]/.test(p) },
   { label: "O literă mică", test: (p: string) => /[a-z]/.test(p) },
   { label: "O cifră", test: (p: string) => /\d/.test(p) },
+  { label: "Un simbol", test: (p: string) => PW_SYMBOLS.test(p) },
 ];
 
 /*
