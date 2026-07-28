@@ -186,7 +186,7 @@ export default function LoginPage() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#07111f] font-sans text-white">
       <img
-        src="/repair.png"
+        src="/repair.jpg"
         alt=""
         aria-hidden="true"
         className="absolute inset-0 h-full w-full object-cover opacity-20"

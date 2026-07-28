@@ -607,7 +607,7 @@ export default function Home() {
               {/* Poză cu CTA suprapus */}
               <div className="relative mt-8 overflow-hidden rounded-2xl border border-[#FFFFFF]/12">
                 <img
-                  src="/repair-section.png"
+                  src="/repair-section.jpg"
                   alt="Service electronic IMPEDEX"
                   className="h-80 w-full object-cover object-[50%_62%]"
                 />
